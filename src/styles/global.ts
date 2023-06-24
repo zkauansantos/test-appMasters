@@ -9,10 +9,14 @@ export const GlobalStyles = createGlobalStyle<{}>`
     font-family: 'Pathway Extreme', sans-serif;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   html, body {
     font-size: 62.5%;
     background: url(${homeBg.src}) center center repeat-y;
-    background-color: ${({ theme }) => theme.colors.zinc['950']};
+    background-color: ${({ theme }) => theme.colors.zinc["950"]};
     background-size: cover;
 
     ::-webkit-scrollbar {

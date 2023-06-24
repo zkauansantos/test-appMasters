@@ -1,60 +1,102 @@
-import { Container, Content, GameCard, GridCards } from "./styles";
-
+import Head from "next/head";
 import Image from "next/image";
-import useLoadGames from "@/services/useLoadGames";
+import { useMemo, useState } from "react";
+
+import useLoadGames, { Game } from "@/services/useLoadGames";
+
+import EmptySearch from "@/components/EmptySearch";
+import Pagination from "@/components/Pagination";
+import Filters from "@/components/Filters";
 import Loader from "@/components/Loader";
-import { useState } from "react";
+import ErrorFeedback from "@/components/ErrorFeedback";
+import Button from "@/components/Button";
+
+import { Container, Content, GameCard, GridCards } from "./styles";
+import useFilteredGames from "@/hooks/useFilteredGames";
 
 export default function Home() {
-  const {
-    data: games,
-    isLoading,
-    isLoadingError,
-    error,
-    isError,
-  } = useLoadGames();
-
-  const gamesDim = games?.slice(0, 9);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data, refetch, isLoading, isRefetching } = useLoadGames(currentPage);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState<string>("");
 
-  const filteredGames = gamesDim?.filter((game: any) =>
-    game.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredGames = useFilteredGames(
+    data?.games,
+    selectedGenre,
+    searchTerm
   );
 
-  console.log(isLoadingError);
+  function handleRetry() {
+    refetch();
+  }
+
+  const hasGames = !!data?.games;
+  const hasError = !!data?.error;
+
+  const showPagination =
+    !hasError && !isLoading && !searchTerm && !selectedGenre;
+
+  const isSearchEmpty =
+    !hasError && hasGames && !isLoading && filteredGames.length < 1;
 
   return (
-    <Container>
-      <Content>
-        <h1>Veja as melhores opções de jogos de 2023</h1>
+    <>
+      <Head>
+        <title>App Masters | Teste </title>
+      </Head>
 
-        <div className="box-search">
-          <input
-            type="text"
-            placeholder="Busque pelo jogo que procura"
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+      <Container>
+        <Content>
+          <h1>Veja as melhores opções de jogos de 2023</h1>
 
-        <GridCards>
-          {isLoading && <Loader />}
+          {!hasError && !isLoading && (
+            <Filters
+              genres={data?.genres}
+              setSelectedGenre={setSelectedGenre}
+              isRefetching={isRefetching}
+              setSearchTerm={setSearchTerm}
+            />
+          )}
 
-          {!isLoading &&
-            filteredGames?.map((game: any) => (
-              <GameCard key={game.id}>
-                <strong>{game.title}</strong>
+          {showPagination && (
+            <Pagination
+              currentPage={currentPage}
+              totalCountOfRegisters={data?.totalCount}
+              onPageChange={setCurrentPage}
+            />
+          )}
 
-                <Image src={game.thumbnail} alt="" width={300} height={170} />
+          {isLoading && <Loader size="12rem" />}
 
-                <p>{game.short_description}</p>
+          {!isLoading && hasError && (
+            <ErrorFeedback
+              onRetry={handleRetry}
+              isRefetching={isRefetching}
+              error={data?.error}
+            />
+          )}
 
-                <p>{game.url}</p>
+          {!isLoading && !hasError && (
+            <GridCards>
+              {filteredGames.map((game: Game) => (
+                <GameCard key={game.id}>
+                  <div className="title">
+                    <strong>{game.title}</strong>
+                    <span>{game.genre}</span>
+                  </div>
 
-                <button type="button">Quero jogar!</button>
-              </GameCard>
-            ))}
-        </GridCards>
-      </Content>
-    </Container>
+                  <Image src={game.thumbnail} alt="" width={300} height={170} />
+
+                  <p>{game.short_description}</p>
+
+                  <Button linkTo={game.game_url}>Quero jogar!</Button>
+                </GameCard>
+              ))}
+              {isSearchEmpty && <EmptySearch searchTerm={searchTerm} />}
+            </GridCards>
+          )}
+        </Content>
+      </Container>
+    </>
   );
 }

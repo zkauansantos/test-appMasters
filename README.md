@@ -10,7 +10,7 @@ Porém, essa API é estranha… não tem documentação, dá uns erros, ora resp
 
 Para acessar esse projeto em produção acesse:
 
-  📍 <a href="" target="_blank" ></a>
+  📍 <a href="https://app-masters-test.vercel.app/" target="_blank" > Teste App Marters</a>
 # Layout
 ## 🗒️ Lista de Games
 [<img src="./public/success.png"/>]()
@@ -25,6 +25,10 @@ Para acessar esse projeto em produção acesse:
 
 ## ❌ Error
 [<img src="./public/error.png"/>]()
+
+## 🚫  Not Found 404
+[<img src="./public/404.png"/>]()
+
 
 ## Requisitos
 

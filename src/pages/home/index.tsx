@@ -89,7 +89,9 @@ export default function Home() {
 
                   <p>{game.short_description}</p>
 
-                  <Button linkTo={game.game_url}>Quero jogar!</Button>
+                  <Button openBlank linkTo={game.game_url}>
+                    Quero jogar!
+                  </Button>
                 </GameCard>
               ))}
               {isSearchEmpty && <EmptySearch searchTerm={searchTerm} />}

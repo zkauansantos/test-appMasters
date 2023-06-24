@@ -6,12 +6,13 @@ interface ButtonProps {
   children: React.ReactNode;
   onRetry?: () => void;
   linkTo?: string;
+  openBlank?: boolean
 }
 
-export default function Button({ children, onRetry, linkTo }: ButtonProps) {
+export default function Button({ children, onRetry, linkTo, openBlank}: ButtonProps) {
   if (linkTo) {
     return (
-      <Link href={linkTo} passHref target="_blank">
+      <Link href={linkTo} passHref target={openBlank ? '_blank' : '_parent'}>
         <ButtonStyled>{children}</ButtonStyled>
       </Link>
     );

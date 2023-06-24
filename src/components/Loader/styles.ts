@@ -1,14 +1,12 @@
 import styled, { keyframes } from "styled-components";
 
-
 export const Overlay = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 50%;
-`
+  grid-column: 2;
+`;
 
 const scaleUp = keyframes`
   0% {
@@ -28,9 +26,9 @@ const pulse = keyframes`
   }
 `;
 
-export const LoaderStyled = styled.div`
-  width: 12rem;
-  height: 12rem;
+export const LoaderStyled = styled.div<{ size: string }>`
+  width: ${({ size }) => size};
+  height: ${({ size }) => size};
   border: 0.5rem solid #fff;
   border-radius: 50%;
   display: inline-block;

@@ -1,10 +1,14 @@
-import React from 'react'
-import { LoaderStyled, Overlay } from './styles'
+import React from "react";
+import { LoaderStyled, Overlay } from "./styles";
 
-export default function Loader() {
+interface LoaderProps {
+  size: string;
+}
+
+export default function Loader({ size }: LoaderProps) {
   return (
     <Overlay>
-      <LoaderStyled/>
+      <LoaderStyled size={size} />
     </Overlay>
-  )
+  );
 }

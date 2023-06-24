@@ -1,26 +1,45 @@
-import axios from "axios";
+import { api } from "@/lib/api";
 import { useQuery } from "react-query";
 
-export default function useLoadGames() {
-  async function loadPosts(): Promise<any> {
-    const response = await axios.get(
-      "https://games-test-api-81e9fb0d564a.herokuapp.com/api/data",
-      {
-        headers: {
-          "dev-email-address": process.env.DEV_EMAIL,
-        },
-      }
-    );
+export interface Game {
+  id: number;
+  title: string;
+  thumbnail: string;
+  short_description: string;
+  game_url: string;
+  genre: string;
+}
 
-    console.log(response.status);
-    console.log(response);
+export async function loadGames(page: number) {
+  try {
+    const { data } = await api.get("/data");
 
-    return response.data;
+    const gamesPerPage = data.slice((page - 1) * 9, page * 9);
+    const genres = gamesPerPage
+      .map((game: Game) => game.genre)
+      .filter(
+        (genre: string, index: number, arrGenres: string[]) =>
+          arrGenres.indexOf(genre) === index
+      );
+    const totalCount = data.length;
+
+    return {
+      games: gamesPerPage,
+      totalCount,
+      genres,
+    };
+  } catch (error: any) {
+    return {
+      error,
+    };
   }
+}
 
+export default function useLoadGames(page: number) {
   return useQuery({
-    queryFn: () => loadPosts(),
-    queryKey: ["games-data"],
+    queryFn: () => loadGames(page),
+    queryKey: ["games-data", page],
     retry: false,
+    staleTime: 600 * 1000, //10min
   });
 }

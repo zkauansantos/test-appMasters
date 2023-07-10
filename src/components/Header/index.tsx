@@ -4,7 +4,7 @@ import { HeaderContainer, HeaderContent } from "./styles";
 import logo from "../../assets/imgs/logo.png";
 
 import { BiUser } from "react-icons/bi";
-import { AiOutlineStar, AiOutlineHome } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineHeart } from "react-icons/ai";
 import Link from "next/link";
 
 export default function Header() {
@@ -25,14 +25,14 @@ export default function Header() {
             </li>
             <li>
               <Link href="/favorites">
-                <AiOutlineStar size={18} />
-                Favorites
+                <AiOutlineHeart size={18} />
+                Favoritos
               </Link>
             </li>
             <li>
               <Link href="/auth">
                 <BiUser size={18} />
-                Account
+                Usuário
               </Link>
             </li>
           </ul>

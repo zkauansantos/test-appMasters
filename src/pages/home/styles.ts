@@ -113,6 +113,15 @@ export const GameCard = styled.div`
     margin-bottom: 1.2rem;
   }
 
+  .interactions {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 2.4rem;
+    margin-bottom: 1.2rem;
+  }
+
   a {
     position: absolute;
     bottom: 8%;

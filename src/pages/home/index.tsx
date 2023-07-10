@@ -13,6 +13,8 @@ import Button from "@/components/Button";
 
 import { Container, Content, GameCard, GridCards } from "./styles";
 import useFilteredGames from "@/hooks/useFilteredGames";
+import Avaliation from "@/components/Avaliation";
+import Favorite from "@/components/Favorite";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,7 +49,7 @@ export default function Home() {
 
       <Container>
         <Content>
-          <h1>Veja as melhores opções de jogos de 2023</h1>
+          <h1>Games</h1>
 
           {!hasError && !isLoading && (
             <Filters
@@ -86,6 +88,11 @@ export default function Home() {
                   </div>
 
                   <Image src={game.thumbnail} alt="" width={300} height={170} />
+
+                  <div className="interactions">
+                    <Avaliation />
+                    <Favorite />
+                  </div>
 
                   <p>{game.short_description}</p>
 

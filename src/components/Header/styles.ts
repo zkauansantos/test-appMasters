@@ -36,7 +36,12 @@ export const HeaderContent = styled.div`
   justify-content: space-between;
 
   img {
+    transition: 0.4s ease;
     animation: ${fadeInLogo} 2s ease;
+
+    :hover {
+      filter: grayscale(70%);
+    }
   }
 
   nav {

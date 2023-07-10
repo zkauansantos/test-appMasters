@@ -1,35 +1,28 @@
 import styled from "styled-components";
 
 export const Container = styled.main`
-  height: calc(100vh - 119px);
+  height: 80vh;
   width: 100vw;
   display: flex;
-  flex: 1;
   justify-content: center;
   align-items: center;
-`;
-
-export const Wrapper = styled.div`
-  width: 100%;
-  max-width: 124rem;
-  display: flex;
-  justify-content: center;
 `;
 
 export const ContainerForm = styled.form`
   min-width: 45rem;
-  min-height: 50rem;
-  background-color: white;
+  padding: 4rem;
+  background-color: ${({ theme }) => theme.colors.zinc["950"]};
+  border: 1px solid ${({ theme }) => theme.colors.indigo["600"]};
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem;
   justify-content: center;
 
   h1 {
     align-self: self-start;
     font-size: 2.4rem;
+    color: ${({ theme }) => theme.colors.neutral["50"]};
     margin-bottom: 0.8rem;
   }
 
@@ -59,20 +52,33 @@ export const ContainerForm = styled.form`
   }
 
   p {
-    margin-top: 1.6rem;
     font-size: 1.6rem;
 
     a {
       margin-left: 0.4rem;
     }
   }
+
+  .suggestions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: ${({ theme }) => theme.colors.neutral["50"]};
+
+    button {
+      padding: 0;
+      margin: 0;
+      outline: none !important;
+      border: none;
+      width: auto;
+      background-color: transparent;
+      color: ${({ theme }) => theme.colors.indigo["600"]};
+    }
+  }
 `;
 
-type FieldProps = {
-  error: boolean;
-};
-
-export const Field = styled.label<FieldProps>`
+export const Field = styled.label<{ error: boolean }>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -80,7 +86,8 @@ export const Field = styled.label<FieldProps>`
   position: relative;
 
   input {
-    border: ${({ error }) => (error ? "1px solid #FC5050" : "1px solid rgba(0,0,0,0.5)")};
+    border: ${({ error }) =>
+      error ? "1px solid #FC5050" : "1px solid rgba(0,0,0,0.5)"};
     padding: 1rem;
     margin-top: 1.6rem;
     font-size: 1.6rem;
@@ -88,6 +95,12 @@ export const Field = styled.label<FieldProps>`
     border-radius: 4px;
     outline: none;
     font-style: italic;
+    border: 3px solid transparent;
+    appearance: none;
+
+    &:focus {
+      border: 3px solid ${({ theme }) => theme.colors.indigo["600"]};
+    }
   }
 
   .show-password {

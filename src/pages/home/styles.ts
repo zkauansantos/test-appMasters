@@ -1,12 +1,12 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const Container = styled.main`
   display: flex;
   justify-content: center;
   align-items: flex-start;
   position: relative;
-  padding-top: 4rem;
-  min-height: 100vh;
+  padding: 4rem 0;
+  min-height: 90vh;
 `;
 
 export const Content = styled.div`
@@ -86,9 +86,14 @@ export const GameCard = styled.div`
   padding: 2.4rem 1.6rem 3.2rem;
   text-align: center;
   position: relative;
+  transition: 0.3s ease;
+  background-color: ${({ theme }) => theme.colors.zinc["950"]};
 
   &:hover {
-    transform: scale(1.025);
+    transform: scale(1.01);
+    -webkit-box-shadow: 0px 0px 20px 1px rgba(79, 70, 229, 0.275);
+    -moz-box-shadow: 0px 0px 20px 1px rgba(79, 70, 229, 0.275);
+    box-shadow: 0px 0px 20px 1px rgba(79, 70, 229, 0.275);
   }
 
   .title {

@@ -6,15 +6,25 @@ import { QueryClientProvider } from "react-query";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "@/styles/global";
 import { theme } from "@/styles/theme";
-
+import Head from "next/head";
+import Header from "@/components/Header";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
+          <Header />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </>
   );
 }

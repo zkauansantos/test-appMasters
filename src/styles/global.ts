@@ -15,9 +15,8 @@ export const GlobalStyles = createGlobalStyle<{}>`
 
   html, body {
     font-size: 62.5%;
-    background: url(${homeBg.src}) center center repeat-y;
+    background: url(${homeBg.src}) center center repeat;
     background-color: ${({ theme }) => theme.colors.zinc["950"]};
-    background-size: cover;
 
     ::-webkit-scrollbar {
       width: 8px;

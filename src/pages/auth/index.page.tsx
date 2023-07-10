@@ -2,13 +2,12 @@
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Container, ContainerForm, Field, InputError, Wrapper } from "./styles";
+import { Container, ContainerForm, Field, InputError } from "./styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 
 import * as yup from "yup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -66,86 +65,76 @@ export default function Auth() {
       </Head>
 
       <Container>
-        <Wrapper>
-          <ContainerForm onSubmit={handleSubmit(handleSignIn)}>
-            <h1>Entrar</h1>
+        <ContainerForm onSubmit={handleSubmit(handleSignIn)}>
+          <h1>
+            {isSignIn && "Entrar"}
+            {!isSignIn && "Cadastro"}
+          </h1>
 
-            {!isSignIn && (
-              <Field error={!!errors.name}>
-                <input type="text" placeholder="Nome" {...register("name")} />
-                {!!errors.name && (
-                  <InputError>{errors.name.message}</InputError>
-                )}
-              </Field>
-            )}
-
-            <Field error={!!errors.email}>
-              <input type="email" placeholder="E-mail" {...register("email")} />
-              {!!errors.email && (
-                <InputError>{errors.email.message}</InputError>
-              )}
+          {!isSignIn && (
+            <Field error={!!errors.name}>
+              <input type="text" placeholder="Nome" {...register("name")} />
+              {!!errors.name && <InputError>{errors.name.message}</InputError>}
             </Field>
+          )}
 
-            <Field error={!!errors.password}>
+          <Field error={!!errors.email}>
+            <input type="email" placeholder="E-mail" {...register("email")} />
+            {!!errors.email && <InputError>{errors.email.message}</InputError>}
+          </Field>
+
+          <Field error={!!errors.password}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Senha"
+              {...register("password")}
+            />
+
+            <button
+              type="button"
+              className="show-password"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <BsEye /> : <BsEyeSlash />}
+            </button>
+
+            {!!errors.password && (
+              <InputError>{errors.password.message}</InputError>
+            )}
+          </Field>
+
+          {!isSignIn && (
+            <Field error={!!errors.passwordConfirmation}>
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Senha"
-                {...register("password")}
+                placeholder="Confirme sua senha"
+                {...register("passwordConfirmation")}
               />
 
               <button
                 type="button"
                 className="show-password"
                 onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? (
-                  <FontAwesomeIcon icon={faEye} size="xl" />
-                ) : (
-                  <FontAwesomeIcon icon={faEyeSlash} size="xl" />
-                )}
-              </button>
-
-              {!!errors.password && (
-                <InputError>{errors.password.message}</InputError>
+              ></button>
+              {!!errors.passwordConfirmation && (
+                <InputError>{errors.passwordConfirmation.message}</InputError>
               )}
             </Field>
+          )}
 
-            {!isSignIn && (
-              <Field error={!!errors.passwordConfirmation}>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Confirme sua senha"
-                  {...register("passwordConfirmation")}
-                />
+          <div>
+            <button type="submit" disabled={isLoading || isSubmitting}>
+              {isSignIn ? "Login" : "Cadastrar"}
+            </button>
+          </div>
 
-                <button
-                  type="button"
-                  className="show-password"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                ></button>
-                {!!errors.passwordConfirmation && (
-                  <InputError>{errors.passwordConfirmation.message}</InputError>
-                )}
-              </Field>
-            )}
-
-            <div>
-              <button type="submit" disabled={isLoading || isSubmitting}>
-                {isSignIn ? "Login" : "Cadastrar"}
-              </button>
-            </div>
-
-            <div>
-              <p>{isSignIn ? "Não tem login?" : "Já tem login?"}</p>
-              <button
-                type="button"
-                onClick={() => setIsSignIn((prev) => !prev)}
-              >
-                {isSignIn ? "Cadastre-se" : "Entrar"}
-              </button>
-            </div>
-          </ContainerForm>
-        </Wrapper>
+          <div className="suggestions">
+            <p>{isSignIn ? "Não tem login?" : "Já tem login?"}</p>
+            <button type="button" onClick={() => setIsSignIn((prev) => !prev)}>
+              {isSignIn ? "Cadastre-se" : "Entrar"}
+            </button>
+          </div>
+        </ContainerForm>
       </Container>
     </>
   );

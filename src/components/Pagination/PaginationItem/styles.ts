@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 
 export const PaginationButton = styled.button`
   width: 1px;

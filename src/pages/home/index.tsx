@@ -13,7 +13,7 @@ import Button from "@/components/Button";
 
 import { Container, Content, GameCard, GridCards } from "./styles";
 import useFilteredGames from "@/hooks/useFilteredGames";
-import Avaliation from "@/components/Avaliation";
+import Rating from "@/components/Rating";
 import Favorite from "@/components/Favorite";
 
 export default function Home() {
@@ -90,7 +90,7 @@ export default function Home() {
                   <Image src={game.thumbnail} alt="" width={300} height={170} />
 
                   <div className="interactions">
-                    <Avaliation />
+                    <Rating />
                     <Favorite />
                   </div>
 

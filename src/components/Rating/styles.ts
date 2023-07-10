@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const AvaliationContainer = styled.div`
+export const RatingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,5 +12,6 @@ export const AvaliationContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
   }
 `;

@@ -8,6 +8,7 @@ import { GlobalStyles } from "@/styles/global";
 import { theme } from "@/styles/theme";
 import Head from "next/head";
 import Header from "@/components/Header";
+import AuthProvider from "@/contexts/AuthContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -19,11 +20,13 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles />
-          <Header />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyles />
+            <Header />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </>
   );

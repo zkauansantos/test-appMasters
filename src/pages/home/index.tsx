@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
 import useLoadGames, { Game } from "@/services/useLoadGames";
 
@@ -15,12 +15,14 @@ import { Container, Content, GameCard, GridCards } from "./styles";
 import useFilteredGames from "@/hooks/useFilteredGames";
 import Rating from "@/components/Rating";
 import Favorite from "@/components/Favorite";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, refetch, isLoading, isRefetching } = useLoadGames(currentPage);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
+  const { user } = useContext(AuthContext);
 
   const filteredGames = useFilteredGames(
     data?.games,
@@ -82,12 +84,11 @@ export default function Home() {
             <GridCards>
               {filteredGames.map((game: Game) => (
                 <GameCard key={game.id}>
+                  <Image src={game.thumbnail} alt="" width={300} height={170} />
                   <div className="title">
                     <strong>{game.title}</strong>
                     <span>{game.genre}</span>
                   </div>
-
-                  <Image src={game.thumbnail} alt="" width={300} height={170} />
 
                   <div className="interactions">
                     <Rating />

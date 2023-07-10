@@ -4,14 +4,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { Container, ContainerForm, Field, InputError } from "./styles";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import * as yup from "yup";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignIn, setIsSignIn] = useState(true);
+  const { signUp, signIn } = useContext(AuthContext);
 
   const validateFieldsSchema = yup.object().shape({
     name: yup
@@ -47,13 +49,22 @@ export default function Auth() {
   });
 
   useEffect(() => {
-    reset(), clearErrors();
+    reset();
+    clearErrors();
   }, [isSignIn, reset, clearErrors]);
 
   const handleSignIn: SubmitHandler<
     yup.InferType<typeof validateFieldsSchema>
   > = async (formData, event) => {
     event?.preventDefault();
+
+    const { name, email, password, passwordConfirmation } = formData;
+
+    if (isSignIn) {
+      return signIn(email, password);
+    }
+
+    signUp(name, email, password);
     return true;
   };
 
@@ -111,11 +122,6 @@ export default function Auth() {
                 {...register("passwordConfirmation")}
               />
 
-              <button
-                type="button"
-                className="show-password"
-                onClick={() => setShowPassword((prev) => !prev)}
-              ></button>
               {!!errors.passwordConfirmation && (
                 <InputError>{errors.passwordConfirmation.message}</InputError>
               )}
@@ -130,7 +136,11 @@ export default function Auth() {
 
           <div className="suggestions">
             <p>{isSignIn ? "Não tem login?" : "Já tem login?"}</p>
-            <button type="button" onClick={() => setIsSignIn((prev) => !prev)}>
+            <button
+              disabled={isLoading || isSubmitting}
+              type="button"
+              onClick={() => setIsSignIn((prev) => !prev)}
+            >
               {isSignIn ? "Cadastre-se" : "Entrar"}
             </button>
           </div>

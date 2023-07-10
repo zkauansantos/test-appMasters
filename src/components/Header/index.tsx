@@ -4,10 +4,14 @@ import { HeaderContainer, HeaderContent } from "./styles";
 import logo from "../../assets/imgs/logo.png";
 
 import { BiUser } from "react-icons/bi";
-import { AiOutlineHome, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineHeart, AiOutlineLogout } from "react-icons/ai";
 import Link from "next/link";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Header() {
+  const { user, logout } = useContext(AuthContext);
+
   return (
     <HeaderContainer>
       <HeaderContent>
@@ -30,11 +34,18 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="/auth">
+              <Link href={!!user ? "/account" : "/auth"}>
                 <BiUser size={18} />
-                Usuário
+                {!!user?.name ? user.name : "Account"}
               </Link>
             </li>
+            {!!user && (
+              <li>
+                <button onClick={() => logout()}>
+                  <AiOutlineLogout size={24} color="#fff" />
+                </button>
+              </li>
+            )}
           </ul>
         </nav>
       </HeaderContent>

@@ -50,6 +50,7 @@ export const HeaderContent = styled.div`
     ul {
       list-style: none;
       display: flex;
+      align-items: center;
       gap: 2.4rem;
 
       a {
@@ -66,6 +67,27 @@ export const HeaderContent = styled.div`
         :hover {
           border: 1px solid ${({ theme }) => theme.colors.indigo["600"]};
           color: ${({ theme }) => theme.colors.indigo["500"]};
+        }
+      }
+
+      button {
+        border: none;
+        background-color: transparent;
+        display: grid;
+        place-items: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+
+        :active {
+          transform: rotate(-90deg);
+        }
+
+        :hover {
+          transform: rotate(-90deg);
+
+          * {
+            color: ${({ theme }) => theme.colors.indigo["500"]};
+          }
         }
       }
     }

@@ -86,8 +86,6 @@ export const Field = styled.label<{ error: boolean }>`
   position: relative;
 
   input {
-    border: ${({ error }) =>
-      error ? "1px solid #FC5050" : "1px solid rgba(0,0,0,0.5)"};
     padding: 1rem;
     margin-top: 1.6rem;
     font-size: 1.6rem;
@@ -96,6 +94,8 @@ export const Field = styled.label<{ error: boolean }>`
     outline: none;
     font-style: italic;
     border: 3px solid transparent;
+    border: ${({ error }) =>
+      error ? "3px solid #FC5050" : "1px solid rgba(0,0,0,0.5)"};
     appearance: none;
 
     &:focus {

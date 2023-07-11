@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
-export const ButtonStyled = styled.button`
+export const ButtonStyled = styled.button<{ background: string | undefined }>`
   border: none;
   font-weight: bold;
-  background-color: ${({ theme }) => theme.colors.indigo["600"]};
+  background-color: ${({ theme, background }) =>
+    background ? background : theme.colors.indigo["600"]};
   color: ${({ theme }) => theme.colors.neutral["50"]};
   padding: 1rem 2rem;
   font-size: 1.8rem;
@@ -14,7 +15,6 @@ export const ButtonStyled = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.indigo["950"]};
-    color: ${({ theme }) => theme.colors.neutral["50"]};
+    opacity: 0.4;
   }
 `;

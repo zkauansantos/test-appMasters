@@ -32,7 +32,7 @@ export default function ErrorFeedback({
 
       <p>{error.message}</p>
 
-      {isServerError && <Button onRetry={onRetry}>Tentar novamente</Button>}
+      {isServerError && <Button onClick={onRetry}>Tentar novamente</Button>}
       {isRefetching && <Loader size="4rem" />}
     </ErrorContainer>
   );

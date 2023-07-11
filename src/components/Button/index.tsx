@@ -4,29 +4,31 @@ import { ButtonStyled } from "./styles";
 
 interface ButtonProps {
   children: React.ReactNode;
-  onRetry?: () => void;
+  onClick?: () => void;
   linkTo?: string;
   openBlank?: boolean;
   type?: "button" | "submit" | "reset";
+  background?: string;
 }
 
 export default function Button({
   children,
-  onRetry,
+  onClick,
   linkTo,
   openBlank,
   type,
+  background,
 }: ButtonProps) {
   if (linkTo) {
     return (
       <Link href={linkTo} passHref target={openBlank ? "_blank" : "_parent"}>
-        <ButtonStyled>{children}</ButtonStyled>
+        <ButtonStyled background={background}>{children}</ButtonStyled>
       </Link>
     );
   }
 
   return (
-    <ButtonStyled onClick={onRetry} type={type ? type : "button"}>
+    <ButtonStyled background={background} onClick={onClick} type={type ? type : "button"}>
       {children}
     </ButtonStyled>
   );

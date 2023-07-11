@@ -16,13 +16,14 @@ import useFilteredGames from "@/hooks/useFilteredGames";
 import Rating from "@/components/Rating";
 import Favorite from "@/components/Favorite";
 import { AuthContext } from "@/contexts/AuthContext";
+import Modal from "@/components/Modal";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, refetch, isLoading, isRefetching } = useLoadGames(currentPage);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
-  const { user } = useContext(AuthContext);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const filteredGames = useFilteredGames(
     data?.games,
@@ -84,7 +85,13 @@ export default function Home() {
             <GridCards>
               {filteredGames.map((game: Game) => (
                 <GameCard key={game.id}>
-                  <Image src={game.thumbnail} alt="" width={300} height={170} />
+                  <Image
+                    src={game.thumbnail}
+                    alt="photo-game"
+                    width={300}
+                    height={170}
+                  />
+
                   <div className="title">
                     <strong>{game.title}</strong>
                     <span>{game.genre}</span>
@@ -92,7 +99,11 @@ export default function Home() {
 
                   <div className="interactions">
                     <Rating />
-                    <Favorite />
+
+                    <Favorite
+                      onModalIsVisible={() => setModalIsVisible(true)}
+                      game={game}
+                    />
                   </div>
 
                   <p>{game.short_description}</p>
@@ -103,6 +114,10 @@ export default function Home() {
                 </GameCard>
               ))}
               {isSearchEmpty && <EmptySearch searchTerm={searchTerm} />}
+              <Modal
+                onToggleVisible={setModalIsVisible}
+                isVisible={modalIsVisible}
+              />
             </GridCards>
           )}
         </Content>

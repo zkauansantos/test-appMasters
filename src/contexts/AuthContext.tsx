@@ -81,6 +81,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         email,
       });
 
+      setCookie(undefined, "user-id", userCredentials.user.uid);
       setCookie(undefined, "user-name", userProfile.data()?.name);
       setCookie(undefined, "user-email", email);
 
@@ -109,6 +110,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         email,
       });
 
+      setCookie(undefined, "user-id", userCredentials.user.uid);
       setCookie(undefined, "user-name", name);
       setCookie(undefined, "user-email", email);
 
@@ -129,6 +131,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     await signOut(auth);
     destroyCookie(undefined, "user-name");
     destroyCookie(undefined, "user-email");
+    destroyCookie(undefined, "user-id");
+
     authChannel.postMessage("logOut");
 
     setUser(null);

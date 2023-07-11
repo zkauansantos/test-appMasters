@@ -34,6 +34,7 @@ export default async function handler(
       email,
       password
     );
+
     const userProfile = await getDoc(
       doc(database, "users", userCredentials.user.uid)
     );

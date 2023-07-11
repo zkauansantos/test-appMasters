@@ -15,7 +15,6 @@ import { Container, Content, GameCard, GridCards } from "./styles";
 import useFilteredGames from "@/hooks/useFilteredGames";
 import Rating from "@/components/Rating";
 import Favorite from "@/components/Favorite";
-import { AuthContext } from "@/contexts/AuthContext";
 import Modal from "@/components/Modal";
 
 export default function Home() {
@@ -98,7 +97,10 @@ export default function Home() {
                   </div>
 
                   <div className="interactions">
-                    <Rating />
+                    <Rating
+                      onModalIsVisible={() => setModalIsVisible(true)}
+                      game={game}
+                    />
 
                     <Favorite
                       onModalIsVisible={() => setModalIsVisible(true)}

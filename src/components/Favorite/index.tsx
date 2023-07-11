@@ -7,13 +7,18 @@ import { Game } from "@/services/useLoadGames";
 import {
   arrayRemove,
   arrayUnion,
+  collection,
+  deleteDoc,
   doc,
   getDoc,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 
 import { database } from "@/firebase/firebase";
 import { parseCookies } from "nookies";
+import axios from "axios";
+import useMutateFavoritesGames from "@/services/useMutateFavoritesGames";
 
 interface FavoriteProps {
   game: Game;
@@ -24,26 +29,7 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [hover, setHover] = useState(false);
   const { "user-id": userId } = parseCookies();
-
-  useEffect(() => {
-    async function loadDatabaseData() {
-      if (userId) {
-        const collectionRef = doc(database, "users", userId);
-        const collectionSnapshot = await getDoc(collectionRef);
-        const lastFavorites = collectionSnapshot.data();
-
-        if (lastFavorites) {
-          lastFavorites.favorites.forEach((gameFavorited: Game) => {
-            if (gameFavorited.id === game.id) {
-              setIsFavorite(true);
-            }
-          });
-        }
-      }
-    }
-
-    loadDatabaseData();
-  }, [userId, game.id]);
+  const addGameMutate = useMutateFavoritesGames(userId);
 
   async function handleToggleGameAsFavorite(game: Game) {
     if (!userId) {
@@ -53,22 +39,13 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
 
     if (isFavorite) {
       setIsFavorite(false);
-
-      const collectionRef = doc(database, "users", userId);
-
-      await updateDoc(collectionRef, {
-        favorites: arrayRemove(game),
-      });
+      await deleteDoc(doc(database, "favorites", userId));
 
       return;
     }
 
     setIsFavorite(true);
-    const collectionRef = doc(database, "users", userId);
-
-    await updateDoc(collectionRef, {
-      favorites: arrayUnion(game),
-    });
+    addGameMutate.mutateAsync({ userId, game });
   }
 
   return (

@@ -1,10 +1,7 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { parseCookies } from "nookies";
-
-import { doc, getDoc } from "firebase/firestore";
-import { database } from "@/firebase/firebase";
 
 import useFilteredGames from "@/hooks/useFilteredGames";
 import { Game } from "@/services/useLoadGames";
@@ -17,42 +14,19 @@ import EmptySearch from "@/components/EmptySearch";
 import Loader from "@/components/Loader";
 
 import { Container, Content, GameCard, GridCards } from "./styles";
+import useFavoritedGames from "@/services/useFavoritesGames";
 
 export default function Favorites() {
   const { "user-id": userId } = parseCookies();
-  const [favoritesGames, setFavoriteGames] = useState<Game[]>([]);
+
+  const { data, isLoading } = useFavoritedGames(userId);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
-  const [gamesFavoritesGenres, setGamesFavoritesGenres] = useState<
-    Game["genre"][]
-  >([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   const filteredFavoritedGames = useFilteredGames(
-    favoritesGames,
+    data?.favoritedGames,
     selectedGenre,
     searchTerm
   );
-
-  useEffect(() => {
-    async function loadDatabaseData() {
-      setIsLoading(true);
-      if (userId) {
-        const collectionRef = doc(database, "users", userId);
-        const collectionSnapshot = await getDoc(collectionRef);
-        const gamesFavoriteds = collectionSnapshot.data()?.favorites || [];
-        const gamesFavoritedsGenres = gamesFavoriteds
-          ? gamesFavoriteds.map((game: Game) => game.genre)
-          : [];
-
-        setFavoriteGames([...gamesFavoriteds]);
-        setGamesFavoritesGenres([...gamesFavoritedsGenres]);
-      }
-      setIsLoading(false);
-    }
-
-    loadDatabaseData();
-  }, [userId]);
 
   return (
     <Container>
@@ -60,7 +34,7 @@ export default function Favorites() {
         <h1>Seus games favoritos</h1>
         {!isLoading && (
           <Filters
-            genres={gamesFavoritesGenres}
+            genres={data?.genresFavoritedGames || []}
             setSelectedGenre={setSelectedGenre}
             isRefetching={false}
             setSearchTerm={setSearchTerm}
@@ -86,7 +60,7 @@ export default function Favorites() {
                 </div>
 
                 <div className="interactions">
-                  <Rating />
+                  <Rating onModalIsVisible={() => true} game={game} />
 
                   <Favorite onModalIsVisible={() => true} game={game} />
                 </div>

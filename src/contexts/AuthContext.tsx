@@ -103,11 +103,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         name: name,
         avatarUrl: null,
         email,
-      });
-
-      setUser({
-        name,
-        email,
+        favorites: [],
       });
 
       setCookie(undefined, "user-id", userCredentials.user.uid);

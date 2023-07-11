@@ -3,13 +3,15 @@ import { Heart } from "./styles";
 
 import { BsHeartFill, BsHeart } from "react-icons/bs";
 import { Game } from "@/services/useLoadGames";
+
 import {
   arrayRemove,
+  arrayUnion,
   doc,
   getDoc,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
+
 import { database } from "@/firebase/firebase";
 import { parseCookies } from "nookies";
 
@@ -26,7 +28,7 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
   useEffect(() => {
     async function loadDatabaseData() {
       if (userId) {
-        const collectionRef = doc(database, "favorites", userId);
+        const collectionRef = doc(database, "users", userId);
         const collectionSnapshot = await getDoc(collectionRef);
         const lastFavorites = collectionSnapshot.data();
 
@@ -52,7 +54,7 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
     if (isFavorite) {
       setIsFavorite(false);
 
-      const collectionRef = doc(database, "favorites", userId);
+      const collectionRef = doc(database, "users", userId);
 
       await updateDoc(collectionRef, {
         favorites: arrayRemove(game),
@@ -62,13 +64,10 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
     }
 
     setIsFavorite(true);
-    const collectionRef = doc(database, "favorites", userId);
-    const collectionSnapshot = await getDoc(collectionRef);
-    const favoritesData = collectionSnapshot.data();
-    const lastFavorites = favoritesData ? favoritesData.favorites : [];
+    const collectionRef = doc(database, "users", userId);
 
-    await setDoc(collectionRef, {
-      favorites: [...lastFavorites, game],
+    await updateDoc(collectionRef, {
+      favorites: arrayUnion(game),
     });
   }
 

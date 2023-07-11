@@ -5,7 +5,7 @@ const nextConfig = {
   images: {
     domains: [
       'www.freetogame.com',
-      'firebasestorage.googleapis.com'
+      'firebasestorage.googleapis.com',
     ],
 
   },

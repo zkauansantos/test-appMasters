@@ -2,13 +2,14 @@
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Container, ContainerForm, Field, InputError } from "./styles";
+import { Container, ContainerForm } from "./styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
 
 import * as yup from "yup";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { AuthContext } from "@/contexts/AuthContext";
+import Field from "@/components/Field";
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -83,18 +84,16 @@ export default function Auth() {
           </h1>
 
           {!isSignIn && (
-            <Field error={!!errors.name}>
+            <Field  errors={errors} name="name">
               <input type="text" placeholder="Nome" {...register("name")} />
-              {!!errors.name && <InputError>{errors.name.message}</InputError>}
             </Field>
           )}
 
-          <Field error={!!errors.email}>
+          <Field errors={errors} name="email">
             <input type="email" placeholder="E-mail" {...register("email")} />
-            {!!errors.email && <InputError>{errors.email.message}</InputError>}
           </Field>
 
-          <Field error={!!errors.password}>
+          <Field errors={errors} name="password">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
@@ -108,23 +107,15 @@ export default function Auth() {
             >
               {showPassword ? <BsEye /> : <BsEyeSlash />}
             </button>
-
-            {!!errors.password && (
-              <InputError>{errors.password.message}</InputError>
-            )}
           </Field>
 
           {!isSignIn && (
-            <Field error={!!errors.passwordConfirmation}>
+            <Field errors={errors} name="">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Confirme sua senha"
                 {...register("passwordConfirmation")}
               />
-
-              {!!errors.passwordConfirmation && (
-                <InputError>{errors.passwordConfirmation.message}</InputError>
-              )}
             </Field>
           )}
 

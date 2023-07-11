@@ -1,15 +1,11 @@
-import { useState, createContext, useEffect } from "react";
-
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-
-import { doc, setDoc, getDoc } from "firebase/firestore";
-import { database, auth } from "@/firebase/firebase";
 import { useRouter } from "next/navigation";
-import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { useState, createContext, useEffect } from "react";
+import axios, { AxiosError } from "axios";
+
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
+
+import { destroyCookie, parseCookies } from "nookies";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -25,9 +21,11 @@ type User = {
 type AuthContextData = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
+  clearAuthError: () => void;
   logout: () => Promise<void>;
   user: User | null;
   isAuthenticated: boolean;
+  authError: null | { message: string };
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -36,6 +34,7 @@ let authChannel: BroadcastChannel;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
+  const [authError, setAuthError] = useState<null | { message: string }>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,66 +59,63 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         name,
         email,
       });
-      return;
     }
   }, [router]);
 
   async function signIn(email: string, password: string) {
     try {
-      const userCredentials = await signInWithEmailAndPassword(
-        auth,
+      const { data: userLogged } = await axios.post("/api/auth/sign-in", {
         email,
-        password
-      );
-
-      const userProfile = await getDoc(
-        doc(database, "users", userCredentials.user.uid)
-      );
-
-      setUser({
-        name: userProfile.data()?.name,
-        email,
+        password,
       });
 
-      setCookie(undefined, "user-id", userCredentials.user.uid);
-      setCookie(undefined, "user-name", userProfile.data()?.name);
-      setCookie(undefined, "user-email", email);
+      setUser(userLogged);
 
       router.push("/");
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          setAuthError({ message: "E-mail ou senha incorretos" });
+          return;
+        }
+
+        if (error.response?.status === 404) {
+          setAuthError({ message: "Usuário não cadastrado" });
+          return;
+        }
+
+        return setAuthError({
+          message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
+        });
+      }
     }
   }
 
   async function signUp(name: string, email: string, password: string) {
     try {
-      const userCredentials = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      await setDoc(doc(database, "users", userCredentials.user.uid), {
-        name: name,
-        avatarUrl: null,
-        email,
-        favorites: [],
-      });
-
-      setCookie(undefined, "user-id", userCredentials.user.uid);
-      setCookie(undefined, "user-name", name);
-      setCookie(undefined, "user-email", email);
-
-      setUser({
+      const { data: userRegistered } = await axios.post("/api/auth/sign-up", {
         name,
         email,
+        password,
       });
 
-      await signIn(email, password);
+      setUser(userRegistered);
 
+      await signIn(email, password);
       router.push("/");
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        if (
+          error.response?.status === 400 &&
+          error.response.data.error.includes("already")
+        ) {
+          setAuthError({ message: "E-mail já cadastrado" });
+        }
+      }
+
+      return setAuthError({
+        message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
+      });
     }
   }
 
@@ -139,6 +135,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       value={{
         isAuthenticated: !!user,
         user,
+        authError,
+        clearAuthError: () => setAuthError(null),
         signUp,
         signIn,
         logout,

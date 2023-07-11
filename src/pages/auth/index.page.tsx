@@ -2,7 +2,7 @@
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-import { Container, ContainerForm } from "./styles";
+import { Container, ContainerForm, InputError } from "./styles";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
 
@@ -14,7 +14,7 @@ import Field from "@/components/Field";
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignIn, setIsSignIn] = useState(true);
-  const { signUp, signIn } = useContext(AuthContext);
+  const { signUp, signIn, clearAuthError, authError } = useContext(AuthContext);
 
   const validateFieldsSchema = yup.object().shape({
     name: yup
@@ -52,6 +52,9 @@ export default function Auth() {
   useEffect(() => {
     reset();
     clearErrors();
+    clearAuthError();
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignIn, reset, clearErrors]);
 
   const handleSignIn: SubmitHandler<
@@ -59,7 +62,7 @@ export default function Auth() {
   > = async (formData, event) => {
     event?.preventDefault();
 
-    const { name, email, password, passwordConfirmation } = formData;
+    const { name, email, password } = formData;
 
     if (isSignIn) {
       return signIn(email, password);
@@ -84,13 +87,14 @@ export default function Auth() {
           </h1>
 
           {!isSignIn && (
-            <Field  errors={errors} name="name">
+            <Field errors={errors} name="name">
               <input type="text" placeholder="Nome" {...register("name")} />
             </Field>
           )}
 
           <Field errors={errors} name="email">
             <input type="email" placeholder="E-mail" {...register("email")} />
+            {!!authError && <InputError>{authError.message}</InputError>}
           </Field>
 
           <Field errors={errors} name="password">
@@ -107,10 +111,11 @@ export default function Auth() {
             >
               {showPassword ? <BsEye /> : <BsEyeSlash />}
             </button>
+            {!!authError && <InputError>{authError.message}</InputError>}
           </Field>
 
           {!isSignIn && (
-            <Field errors={errors} name="">
+            <Field errors={errors} name="passwordConfirmation">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Confirme sua senha"

@@ -8,6 +8,7 @@ export interface Game {
   short_description: string;
   game_url: string;
   genre: string;
+  rate: null | number;
 }
 
 export async function loadGames(page: number) {
@@ -24,7 +25,7 @@ export async function loadGames(page: number) {
     const totalCount = data.length;
 
     return {
-      games: gamesPerPage,
+      games: gamesPerPage.map((game: Game) => ({ ...game, rate: null })),
       totalCount,
       genres,
     };

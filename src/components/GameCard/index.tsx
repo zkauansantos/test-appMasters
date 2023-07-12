@@ -20,19 +20,25 @@ export default function GameCard({ game }: GameCardProps) {
   const [modalIsVisible, setModalIsVisible] = useState(false);
   const { "user-id": userId } = parseCookies();
   const { data } = useFavoritedGames(userId);
-  const [gameFavorited, setGameFavorited] = useState(false);
+  const [gameWasFavorited, setGameWasFavorited] = useState(false);
+  const [lastRateSaved, setLastRateSaved] = useState(-1);
 
   useEffect(() => {
-    if (
-      userId &&
-      data?.favoritedGames.some((gameFav: any) => gameFav.id === game.id)
-    ) {
-      setGameFavorited(true);
+    const gameFavoriteIsSaveOnDabase = data?.favoritedGames.some(
+      (gameFav: Game) => gameFav.id === game.id
+    );
+
+    if (userId && gameFavoriteIsSaveOnDabase) {
+      setGameWasFavorited(true);
       return;
     }
 
-    setGameFavorited(false);
+    setGameWasFavorited(false);
   }, [userId, data?.favoritedGames, game.id]);
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <>
@@ -51,10 +57,10 @@ export default function GameCard({ game }: GameCardProps) {
           />
 
           <Favorite
-            onRemoveGameFavorite={() => setGameFavorited(false)}
+            onRemoveGameFavorite={() => setGameWasFavorited(false)}
             onModalIsVisible={() => setModalIsVisible(true)}
             game={game}
-            isGameFavorite={gameFavorited}
+            isGameFavorite={gameWasFavorited}
           />
         </div>
 

@@ -12,14 +12,12 @@ interface FavoriteProps {
   game: Game;
   isGameFavorite: boolean;
   onModalIsVisible: () => void;
-  onRemoveGameFavorite: () => void;
 }
 
 export default function Favorite({
   game,
-  onModalIsVisible,
   isGameFavorite,
-  onRemoveGameFavorite,
+  onModalIsVisible,
 }: FavoriteProps) {
   const [isFavorite, setIsFavorite] = useState(isGameFavorite);
   const [hover, setHover] = useState(false);
@@ -37,7 +35,6 @@ export default function Favorite({
     }
 
     if (isFavorite) {
-      onRemoveGameFavorite();
       setIsFavorite(false);
 
       //remove

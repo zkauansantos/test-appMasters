@@ -12,6 +12,8 @@ import Loader from "@/components/Loader";
 import GameCard from "@/components/GameCard";
 
 import * as S from "@/styles/shared/Gridcards";
+import EmptyFavorites from "@/components/EmptyFavorites";
+import sortGamesByRating from "@/utils/sortGamesByRating";
 
 export default function Favorites() {
   const { "user-id": userId } = parseCookies();
@@ -19,18 +21,33 @@ export default function Favorites() {
   const { data, isLoading } = useFavoritedGames(userId);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
+  const [sortOrderByRating, setSortOrderByRating] = useState<"asc" | "desc">(
+    "asc"
+  );
+
   const filteredFavoritedGames = useFilteredGames(
     data?.favoritedGames,
     selectedGenre,
     searchTerm
   );
 
+  const sortedGames = sortGamesByRating(
+    sortOrderByRating,
+    filteredFavoritedGames
+  );
+
+  const hasFavorites = data?.favoritedGames.length > 0;
+
   return (
     <S.Container>
       <S.Content>
         <h1>Seus games favoritos</h1>
-        {!isLoading && (
+        {!isLoading && !!hasFavorites && (
           <Filters
+            order={sortOrderByRating}
+            onOrderByRating={() =>
+              setSortOrderByRating((prev) => (prev === "asc" ? "desc" : "asc"))
+            }
             genres={data?.genresFavoritedGames || []}
             setSelectedGenre={setSelectedGenre}
             isRefetching={false}
@@ -42,13 +59,15 @@ export default function Favorites() {
 
         {!isLoading && (
           <S.GridCards>
-            {filteredFavoritedGames.map((game: Game) => (
+            {sortedGames.map((game: Game) => (
               <GameCard key={game.id} game={game} />
             ))}
 
-            {filteredFavoritedGames.length < 1 && searchTerm && (
+            {sortedGames.length < 1 && searchTerm && (
               <EmptySearch searchTerm={searchTerm} />
             )}
+
+            {!hasFavorites && <EmptyFavorites />}
           </S.GridCards>
         )}
       </S.Content>

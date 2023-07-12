@@ -8,8 +8,17 @@ export const FiltersContainer = styled.div`
   width: 100%;
   gap: 2.4rem;
 
-  > div { //loader
-    width: initial !important;
+  .order-fetching {
+    position: relative;
+
+    > div {
+      //loader
+      width: initial !important;
+      position: absolute !important;
+      bottom: -110% !important;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 
   input,

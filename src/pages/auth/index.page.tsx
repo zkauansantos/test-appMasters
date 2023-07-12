@@ -1,15 +1,17 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
-
-import { Container, ContainerForm, InputError } from "./styles";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext, useEffect, useState } from "react";
 
-import * as yup from "yup";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
 import { AuthContext } from "@/contexts/AuthContext";
+
 import Field from "@/components/Field";
+
+import { Container, ContainerForm, InputError } from "./styles";
 
 export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +55,7 @@ export default function Auth() {
     reset();
     clearErrors();
     clearAuthError();
-    
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignIn, reset, clearErrors]);
 

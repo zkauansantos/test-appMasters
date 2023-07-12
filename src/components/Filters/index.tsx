@@ -1,18 +1,26 @@
+import { BsArrowDown, BsArrowUp } from "react-icons/bs";
+
+import Button from "../Button";
 import Loader from "../Loader";
+
 import { FiltersContainer } from "./styles";
 
 interface FiltersProps {
   setSearchTerm: (searchTerm: string) => void;
   setSelectedGenre: (selectedGenre: string) => void;
+  onOrderByRating: () => void;
   isRefetching: boolean;
   genres: string[];
+  order: "asc" | "desc";
 }
 
 export default function Filters({
   isRefetching,
+  genres,
+  order,
   setSearchTerm,
   setSelectedGenre,
-  genres,
+  onOrderByRating,
 }: FiltersProps) {
   function renderGenres() {
     return genres.map((genre, i) => (
@@ -30,9 +38,19 @@ export default function Filters({
         placeholder="Busque pelo jogo que procura"
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      {isRefetching && <Loader size="2rem" />}
 
-      <select defaultValue=""onChange={(e) => setSelectedGenre(e.target.value)}>
+      <div className="order-fetching">
+        {isRefetching && <Loader size="2rem" />}
+        <Button onClick={onOrderByRating}>
+          {order === "asc" && <BsArrowUp />}
+          {order === "desc" && <BsArrowDown />}
+        </Button>
+      </div>
+
+      <select
+        defaultValue=""
+        onChange={(e) => setSelectedGenre(e.target.value)}
+      >
         <option value="" disabled>
           Filtre por gênero
         </option>

@@ -1,15 +1,16 @@
+import Head from "next/head";
 import type { AppProps } from "next/app";
 
 import { queryClient } from "@/lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import { ThemeProvider } from "styled-components";
+import AuthProvider from "@/contexts/AuthContext";
+
+import Header from "@/components/Header";
+
 import { GlobalStyles } from "@/styles/global";
 import { theme } from "@/styles/theme";
-import Head from "next/head";
-import Header from "@/components/Header";
-import AuthProvider from "@/contexts/AuthContext";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ThemeProvider } from "styled-components";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -23,7 +24,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ThemeProvider theme={theme}>
-            <ReactQueryDevtools />
             <GlobalStyles />
             <Header />
             <Component {...pageProps} />

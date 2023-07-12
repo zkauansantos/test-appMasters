@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RatingContainer } from "./styles";
 
 import { BsStar, BsStarFill } from "react-icons/bs";
@@ -9,16 +9,21 @@ import axios from "axios";
 interface RatingProps {
   onModalIsVisible: () => void;
   game: Game;
+  lastRating: number;
 }
 
-export default function Rating({ onModalIsVisible, game }: RatingProps) {
-  const [currentRating, setCurrentRating] = useState<number>(0);
+export default function Rating({
+  onModalIsVisible,
+  game,
+  lastRating,
+}: RatingProps) {
+  const [currentRating, setCurrentRating] = useState<number>(lastRating);
   const [hover, setHover] = useState(0);
   const { "user-id": userId } = parseCookies();
 
   const stars: number[] = Array.from(Array(5).keys());
 
-  async function handleToggleGameAsFavorite(index: number, game: Game) {
+  async function handleRating(index: number, game: Game) {
     if (!userId) {
       onModalIsVisible();
       return;
@@ -27,12 +32,19 @@ export default function Rating({ onModalIsVisible, game }: RatingProps) {
     if (currentRating === index) {
       setCurrentRating(0);
 
-      //remove rating
+      await axios.put(`/api/user/rating/${userId}/change-rating`, { game });
       return;
     }
 
-    // rate
+    await axios.post(`/api/user/rating/${userId}/rate`, {
+      gameId: game.id,
+      rate: index,
+    });
   }
+
+  useEffect(() => {
+    setCurrentRating(currentRating);
+  }, [currentRating]);
 
   return (
     <RatingContainer>
@@ -41,7 +53,7 @@ export default function Rating({ onModalIsVisible, game }: RatingProps) {
           key={`${Math.random()}-${index}`}
           onClick={() => {
             setCurrentRating(index + 1);
-            handleToggleGameAsFavorite(index + 1, game);
+            handleRating(index + 1, game);
           }}
           onMouseEnter={() => {
             setHover(index + 1);

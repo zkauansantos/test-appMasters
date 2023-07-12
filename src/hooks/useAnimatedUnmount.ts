@@ -1,4 +1,4 @@
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function useAnimatedUnmount(visible: boolean) {
   const [shouldRender, setShouldRender] = useState(visible);

@@ -1,11 +1,11 @@
-import React from "react";
-import { ErrorContainer } from "./styles";
 import Image from "next/image";
 
 import sad from "@/assets/icons/sad.svg";
+
 import Button from "../Button";
 import Loader from "../Loader";
 
+import { ErrorContainer } from "./styles";
 interface ErrorFeedbackProps {
   error: {
     message: string;

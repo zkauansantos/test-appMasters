@@ -2,15 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { database } from "@/firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-export interface Game {
-  id: number;
-  title: string;
-  thumbnail: string;
-  short_description: string;
-  game_url: string;
-  genre: string;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -18,7 +9,6 @@ export default async function handler(
   if (req.method !== "GET") {
     res.status(405).end();
   }
-
   const { userId } = req.query;
 
   if (!userId) {
@@ -27,10 +17,10 @@ export default async function handler(
     });
   }
 
-  const collectionRef = doc(database, "favorites", String(userId));
+  const collectionRef = doc(database, "ratings", String(userId));
   const querySnapshot = await getDoc(collectionRef);
 
-  const gamesFavorites = querySnapshot.data()?.favorites || [];
+  const ratings = querySnapshot.data()?.ratings || [];
 
-  return res.status(200).json(gamesFavorites);
+  return res.status(200).json(ratings);
 }

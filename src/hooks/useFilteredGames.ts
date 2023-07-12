@@ -1,5 +1,6 @@
-import { Game } from "@/services/useLoadGames";
 import { useMemo } from "react";
+
+import { Game } from "@/services/useLoadGames";
 
 const useFilteredGames = (
   games: Game[] | undefined,

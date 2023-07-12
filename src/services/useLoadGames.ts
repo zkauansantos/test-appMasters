@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export interface Game {
   id: number;
@@ -9,10 +10,29 @@ export interface Game {
   game_url: string;
   genre: string;
   rate: null | number;
+  favorite: boolean;
 }
 
-export async function loadGames(page: number) {
+interface Rating {
+  gameId: number;
+  rate: number | null;
+}
+
+export async function loadGames(page: number, userId: string) {
   try {
+    let userRatings: Rating[] = [];
+    let gamesFavorites: Game[] = [];
+
+    if (userId) {
+      const [responseRatings, responseFavoritesIds] = await Promise.all([
+        await axios.get(`/api/user/rating/${userId}/list`),
+        await axios.get(`/api/user/favorites/${userId}/list`),
+      ]);
+
+      userRatings = responseRatings.data;
+      gamesFavorites = responseFavoritesIds.data;
+    }
+
     const { data } = await api.get("/data");
 
     const gamesPerPage = data.slice((page - 1) * 9, page * 9);
@@ -24,8 +44,23 @@ export async function loadGames(page: number) {
       );
     const totalCount = data.length;
 
+    const gamesWithRatingAndFavorite = gamesPerPage.map((game: Game) => {
+      const rating = userRatings.find(
+        (rating: Rating) => rating.gameId === game.id
+      );
+      const isFavorite = gamesFavorites.some(
+        (gameFav: Game) => gameFav.id === game.id
+      );
+
+      return {
+        ...game,
+        rate: rating ? rating.rate : null,
+        favorite: isFavorite,
+      };
+    });
+
     return {
-      games: gamesPerPage.map((game: Game) => ({ ...game, rate: null })),
+      games: gamesWithRatingAndFavorite,
       totalCount,
       genres,
     };
@@ -36,9 +71,9 @@ export async function loadGames(page: number) {
   }
 }
 
-export default function useLoadGames(page: number) {
+export default function useLoadGames(page: number, userId: string) {
   return useQuery({
-    queryFn: () => loadGames(page),
+    queryFn: () => loadGames(page, userId),
     queryKey: ["games-data", page],
     retry: false,
     staleTime: 600 * 1000, //10min

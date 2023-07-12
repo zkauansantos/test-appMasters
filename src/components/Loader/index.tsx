@@ -1,4 +1,3 @@
-import React from "react";
 import { LoaderStyled, Overlay } from "./styles";
 
 interface LoaderProps {

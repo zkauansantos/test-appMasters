@@ -22,7 +22,7 @@ export default async function handler(
 
   const { userId } = req.query;
 
-  const { game, rate } = req.body;
+  const { gameId, rate } = req.body;
 
   if (!userId) {
     return res.status(400).json({
@@ -30,7 +30,7 @@ export default async function handler(
     });
   }
 
-  if (!game) {
+  if (!gameId) {
     return res.status(400).json({
       error: "userId not provided.",
     });
@@ -46,7 +46,7 @@ export default async function handler(
     const collectionRef = collection(database, "ratings");
 
     await setDoc(doc(collectionRef, String(userId)), {
-      ratings: [...ratings, { ...game, rate }],
+      ratings: [...ratings, { gameId, rate }],
     });
   } catch (err) {}
 

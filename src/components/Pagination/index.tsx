@@ -1,5 +1,6 @@
 import PaginationItem from "./PaginationItem";
 import generatePagesArray from "@/utils/generatePagesArray";
+
 import { BoxItems, PaginationContainer } from "./styles";
 
 interface PaginationProps {

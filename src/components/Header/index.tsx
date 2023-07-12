@@ -1,13 +1,15 @@
 import Image from "next/image";
-import { HeaderContainer, HeaderContent } from "./styles";
+import Link from "next/link";
+import { useContext } from "react";
 
 import logo from "../../assets/imgs/logo.png";
 
 import { BiUser } from "react-icons/bi";
 import { AiOutlineHome, AiOutlineHeart, AiOutlineLogout } from "react-icons/ai";
-import Link from "next/link";
-import { useContext } from "react";
+
 import { AuthContext } from "@/contexts/AuthContext";
+
+import { HeaderContainer, HeaderContent } from "./styles";
 
 export default function Header() {
   const { user, logout } = useContext(AuthContext);

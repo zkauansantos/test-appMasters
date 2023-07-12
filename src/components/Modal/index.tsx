@@ -1,7 +1,10 @@
-import useAnimatedUnmount from "@/hooks/useAnimatedUnmount";
-import Button from "../Button";
-import { ModalContent, Overlay } from "./styles";
 import { useRouter } from "next/router";
+
+import useAnimatedUnmount from "@/hooks/useAnimatedUnmount";
+
+import Button from "../Button";
+
+import { ModalContent, Overlay } from "./styles";
 
 interface ModalProps {
   isVisible: boolean;

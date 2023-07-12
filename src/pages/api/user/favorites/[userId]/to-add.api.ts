@@ -29,7 +29,7 @@ export default async function handler(
     });
   }
 
-  if(!game){
+  if (!game) {
     return res.status(400).json({
       error: "userId not provided.",
     });
@@ -44,13 +44,10 @@ export default async function handler(
 
     const collectionRef = collection(database, "favorites");
 
-
-    const create = await setDoc(doc(collectionRef, String(userId)), {
+    await setDoc(doc(collectionRef, String(userId)), {
       favorites: [...gamesFavorites, game],
     });
 
-    console.log(create)
     return res.status(201);
   } catch (err) {}
-
 }

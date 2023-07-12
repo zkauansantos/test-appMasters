@@ -28,7 +28,7 @@ export default function ErrorFeedback({
 
   return (
     <ErrorContainer>
-      <Image src={sad} width={250} height={250} alt="sad" />
+      <Image src={sad} width={250} height={250} alt="sad" priority />
 
       <p>{error.message}</p>
 

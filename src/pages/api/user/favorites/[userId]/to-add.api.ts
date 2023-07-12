@@ -44,10 +44,13 @@ export default async function handler(
 
     const collectionRef = collection(database, "favorites");
 
-    await setDoc(doc(collectionRef, String(userId)), {
+
+    const create = await setDoc(doc(collectionRef, String(userId)), {
       favorites: [...gamesFavorites, game],
     });
+
+    console.log(create)
+    return res.status(201);
   } catch (err) {}
 
-  return res.status(201);
 }

@@ -16,7 +16,7 @@ export default function Header() {
     <HeaderContainer>
       <HeaderContent>
         <Link href="/">
-          <Image src={logo} width={120} height={120} alt="logo" />
+          <Image src={logo} width={120} height={120} alt="logo" priority/>
         </Link>
 
         <nav>

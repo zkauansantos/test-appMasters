@@ -37,13 +37,13 @@ export default function GameCard({ game }: GameCardProps) {
   }, [userId, data?.favoritedGames, game.id]);
 
   useEffect(() => {
-    
+
   }, []);
 
   return (
     <>
       <GameCardContainer>
-        <Image src={game.thumbnail} alt="photo-game" width={300} height={170} />
+        <Image src={game.thumbnail} alt="photo-game" width={300} height={170}  priority/>
 
         <div className="title">
           <strong>{game.title}</strong>

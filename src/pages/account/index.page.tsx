@@ -31,7 +31,13 @@ export default function Account() {
   return (
     <AccountContainer>
       <AccountWrapper>
-        <Image src={avatar} width={650} height={400} alt="photo-user" />
+        <Image
+          src={avatar}
+          width={650}
+          height={400}
+          alt="photo-user"
+          priority
+        />
 
         <FormUserEdit onSubmit={handleSubmit(handleEditUser)}>
           <div style={{ width: "100%" }}>

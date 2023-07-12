@@ -12,7 +12,7 @@ interface EmptySearchProps {
 export default function EmptySearch({searchTerm}: EmptySearchProps) {
   return (
     <EmptyContainer>
-      <Image src={magnifierQuestion} width={100} height={100} alt="magnifier-question"/>
+      <Image src={magnifierQuestion} width={100} height={100} alt="magnifier-question" priority/>
       <p>Nenhum resultado de jogo foi encontrado para <span>"{searchTerm}"</span></p>
     </EmptyContainer>
   )

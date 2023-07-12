@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
-import { Heart } from "./styles";
+import { parseCookies } from "nookies";
 
 import { BsHeartFill, BsHeart } from "react-icons/bs";
+
 import { Game } from "@/services/useLoadGames";
-
-import {
-  arrayRemove,
-  arrayUnion,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
-
-import { database } from "@/firebase/firebase";
-import { parseCookies } from "nookies";
-import axios from "axios";
 import useMutateFavoritesGames from "@/services/useMutateFavoritesGames";
+
+import { Heart } from "./styles";
 
 interface FavoriteProps {
   game: Game;
+  isGameFavorite: boolean;
   onModalIsVisible: () => void;
+  onRemoveGameFavorite: () => void;
 }
 
-export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+export default function Favorite({
+  game,
+  onModalIsVisible,
+  isGameFavorite,
+  onRemoveGameFavorite,
+}: FavoriteProps) {
+  const [isFavorite, setIsFavorite] = useState(isGameFavorite);
   const [hover, setHover] = useState(false);
   const { "user-id": userId } = parseCookies();
-  const addGameMutate = useMutateFavoritesGames(userId);
+  const gameMutate = useMutateFavoritesGames();
+
+  useEffect(() => {
+    setIsFavorite(isGameFavorite);
+  }, [isGameFavorite]);
 
   async function handleToggleGameAsFavorite(game: Game) {
     if (!userId) {
@@ -38,14 +37,18 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
     }
 
     if (isFavorite) {
+      onRemoveGameFavorite();
       setIsFavorite(false);
-      await deleteDoc(doc(database, "favorites", userId));
+
+      //remove
+      gameMutate.mutateAsync({ userId, game: game });
 
       return;
     }
 
     setIsFavorite(true);
-    addGameMutate.mutateAsync({ userId, game });
+    //add
+    gameMutate.mutateAsync({ userId, game: game, toAdd: true });
   }
 
   return (
@@ -58,7 +61,7 @@ export default function Favorite({ game, onModalIsVisible }: FavoriteProps) {
         setHover(false);
       }}
     >
-      {isFavorite || hover ? (
+      {isFavorite || hover || isGameFavorite ? (
         <BsHeartFill color="red" size={20} />
       ) : (
         <BsHeart color="red" size={20} />

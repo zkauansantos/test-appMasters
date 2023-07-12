@@ -1,6 +1,5 @@
 import Head from "next/head";
-import Image from "next/image";
-import { useContext, useMemo, useState } from "react";
+import { useState } from "react";
 
 import useLoadGames, { Game } from "@/services/useLoadGames";
 
@@ -9,20 +8,17 @@ import Pagination from "@/components/Pagination";
 import Filters from "@/components/Filters";
 import Loader from "@/components/Loader";
 import ErrorFeedback from "@/components/ErrorFeedback";
-import Button from "@/components/Button";
 
-import { Container, Content, GameCard, GridCards } from "./styles";
+import * as S from "@/styles/shared/Gridcards";
+
 import useFilteredGames from "@/hooks/useFilteredGames";
-import Rating from "@/components/Rating";
-import Favorite from "@/components/Favorite";
-import Modal from "@/components/Modal";
+import GameCard from "@/components/GameCard";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, refetch, isLoading, isRefetching } = useLoadGames(currentPage);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
-  const [modalIsVisible, setModalIsVisible] = useState(false);
 
   const filteredGames = useFilteredGames(
     data?.games,
@@ -49,8 +45,8 @@ export default function Home() {
         <title>App Masters | Teste </title>
       </Head>
 
-      <Container>
-        <Content>
+      <S.Container>
+        <S.Content>
           <h1>Games</h1>
 
           {!hasError && !isLoading && (
@@ -81,49 +77,16 @@ export default function Home() {
           )}
 
           {!isLoading && !hasError && (
-            <GridCards>
+            <S.GridCards>
               {filteredGames.map((game: Game) => (
-                <GameCard key={game.id}>
-                  <Image
-                    src={game.thumbnail}
-                    alt="photo-game"
-                    width={300}
-                    height={170}
-                  />
-
-                  <div className="title">
-                    <strong>{game.title}</strong>
-                    <span>{game.genre}</span>
-                  </div>
-
-                  <div className="interactions">
-                    <Rating
-                      onModalIsVisible={() => setModalIsVisible(true)}
-                      game={game}
-                    />
-
-                    <Favorite
-                      onModalIsVisible={() => setModalIsVisible(true)}
-                      game={game}
-                    />
-                  </div>
-
-                  <p>{game.short_description}</p>
-
-                  <Button openBlank linkTo={game.game_url}>
-                    Quero jogar!
-                  </Button>
-                </GameCard>
+                <GameCard key={game.id} game={game} />
               ))}
+
               {isSearchEmpty && <EmptySearch searchTerm={searchTerm} />}
-              <Modal
-                onToggleVisible={setModalIsVisible}
-                isVisible={modalIsVisible}
-              />
-            </GridCards>
+            </S.GridCards>
           )}
-        </Content>
-      </Container>
+        </S.Content>
+      </S.Container>
     </>
   );
 }

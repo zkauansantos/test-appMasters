@@ -29,22 +29,20 @@ export default async function handler(
     });
   }
 
+  if(!game){
+    return res.status(400).json({
+      error: "userId not provided.",
+    });
+  }
+
   try {
     const favoritesRef = doc(database, "favorites", String(userId));
 
-    console.log("passou daqui 1");
-
     const querySnapshot = await getDoc(favoritesRef);
-
-    console.log("passou daqui 2");
 
     const gamesFavorites = querySnapshot.data()?.favorites || [];
 
-    console.log("passou daqui 3");
-
     const collectionRef = collection(database, "favorites");
-
-    console.log("passou daqui 4");
 
     await setDoc(doc(collectionRef, String(userId)), {
       favorites: [...gamesFavorites, game],

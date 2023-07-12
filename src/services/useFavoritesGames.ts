@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Game } from "./useLoadGames";
 
 export async function loadFavoritedGames(userId: string) {
@@ -28,8 +28,7 @@ export async function loadFavoritedGames(userId: string) {
 export default function useFavoritedGames(userId: string) {
   return useQuery({
     queryFn: () => loadFavoritedGames(userId),
-    queryKey: ["favorited-games", userId],
+    queryKey: ["favorited-games"],
     retry: false,
-    staleTime: 600 * 1000, //10min
   });
 }

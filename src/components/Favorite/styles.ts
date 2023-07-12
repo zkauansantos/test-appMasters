@@ -22,6 +22,6 @@ export const Heart = styled.button`
   animation: ${fadeIn} 1.4s ease;
 
   :hover {
-    transform: scale(1.3);
+    transform: scale(1.5);
   }
 `;

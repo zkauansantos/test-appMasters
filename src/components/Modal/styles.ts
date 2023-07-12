@@ -22,6 +22,7 @@ const scaleOut = keyframes`
 
 export const Overlay = styled.div<{ isLeaving: boolean }>`
   position: fixed;
+  z-index: 2;
   top: 0;
   left: 0;
   height: 100vh;

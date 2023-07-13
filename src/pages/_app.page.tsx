@@ -29,7 +29,11 @@ export default function App({ Component, pageProps }: AppProps) {
             <GlobalStyles />
             <Header />
             <Component {...pageProps} />
-            <ToastContainerStyled position="bottom-center" limit={3} />
+            <ToastContainerStyled
+              position="bottom-center"
+              limit={3}
+              autoClose={1500}
+            />
           </ThemeProvider>
         </AuthProvider>
       </QueryClientProvider>

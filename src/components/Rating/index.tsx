@@ -5,6 +5,7 @@ import { BsStar, BsStarFill } from "react-icons/bs";
 import { parseCookies } from "nookies";
 import { Game } from "@/services/useLoadGames";
 import axios from "axios";
+import useMutateRatings from "@/services/useMutateRatings";
 
 interface RatingProps {
   onModalIsVisible: () => void;
@@ -17,11 +18,11 @@ export default function Rating({
   game,
   lastRating,
 }: RatingProps) {
+  const stars: number[] = Array.from(Array(5).keys());
+  const { "user-id": userId } = parseCookies();
   const [currentRating, setCurrentRating] = useState<number>(lastRating);
   const [hover, setHover] = useState(0);
-  const { "user-id": userId } = parseCookies();
-
-  const stars: number[] = Array.from(Array(5).keys());
+  const ratingMutate = useMutateRatings();
 
   async function handleRating(index: number, game: Game) {
     if (!userId) {
@@ -30,34 +31,32 @@ export default function Rating({
     }
 
     if (currentRating === index) {
-      await axios.delete(`/api/user/rating/${userId}/delete`, {
-        headers: {
-          "game-id": game.id,
-        },
-      });
-
+      // delete rating
       setCurrentRating(0);
+      ratingMutate.mutateAsync({ gameId: game.id, userId, toRemove: true });
       return;
     }
 
     const ratingsSaveds = await axios.get(`/api/user/rating/${userId}/list`);
     const currentRateDiferentRatingSaved = ratingsSaveds.data.some(
-      (rating: any) => {
+      (rating: { rate: number }) => {
         return rating.rate !== index;
       }
     );
 
     if (currentRateDiferentRatingSaved) {
-      return await axios.put(`/api/user/rating/${userId}/update`, {
+      // update rating
+      ratingMutate.mutateAsync({
         gameId: game.id,
-        newRate: index,
+        userId,
+        rate: index,
+        toUpdate: true,
       });
+      return;
     }
 
-    return await axios.post(`/api/user/rating/${userId}/rate`, {
-      gameId: game.id,
-      rate: index,
-    });
+    // add rating
+    ratingMutate.mutateAsync({ gameId: game.id, userId, rate: index });
   }
 
   return (
@@ -66,8 +65,8 @@ export default function Rating({
         <button
           key={`${Math.random()}-${index}`}
           onClick={() => {
-            handleRating(index + 1, game);
             setCurrentRating(index + 1);
+            handleRating(index + 1, game);
           }}
           onMouseEnter={() => {
             setHover(index + 1);

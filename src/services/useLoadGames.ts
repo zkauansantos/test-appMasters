@@ -78,7 +78,7 @@ export async function loadGames(page: number, userId: string) {
       totalCount,
       genres,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       error,
     };

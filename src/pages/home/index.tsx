@@ -29,7 +29,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
   const [sortOrderByRating, setSortOrderByRating] = useState<"asc" | "desc">(
-    "asc"
+    "desc"
   );
 
   const filteredGames = useFilteredGames(
@@ -69,7 +69,7 @@ export default function Home() {
 
           {!hasError && !isLoading && (
             <Filters
-            order={sortOrderByRating}
+              order={sortOrderByRating}
               onOrderByRating={() =>
                 setSortOrderByRating((prev) =>
                   prev === "asc" ? "desc" : "asc"

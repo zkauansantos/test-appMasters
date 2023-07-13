@@ -23,7 +23,7 @@ async function updateRating(
       gameId,
       newRate,
     });
-    toast.success("Game avaliado com sucesso!");
+    toast.success("Avaliação alterada com sucesso!");
   } catch {
     toast.error("Ops! Ocorreu um erro ao editar sua avaliação!");
   }

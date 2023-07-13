@@ -34,7 +34,7 @@ export default async function handler(
     const ratingsRef = doc(database, "ratings", String(userId));
     const querySnapshotRatings = await getDoc(ratingsRef);
 
-    if (querySnapshotFavorites.exists() && querySnapshotRatings.exists()) {
+    if (querySnapshotFavorites.exists()) {
       const favorites: Game[] = querySnapshotFavorites.data()?.favorites || [];
       const ratings = querySnapshotRatings.data()?.ratings || [];
 

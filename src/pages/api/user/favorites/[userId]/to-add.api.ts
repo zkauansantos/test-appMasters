@@ -48,6 +48,6 @@ export default async function handler(
       favorites: [...gamesFavorites, game],
     });
 
-    return res.status(201);
+    return res.status(201).end();
   } catch (err) {}
 }

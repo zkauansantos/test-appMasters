@@ -9,12 +9,12 @@ export default function sortGamesByRating(
       return 0;
     }
     if (a.rate === null) {
-      return sortOrder === "asc" ? 1 : -1;
+      return sortOrder === "desc" ? 1 : -1;
     }
     if (b.rate === null) {
-      return sortOrder === "asc" ? -1 : 1;
+      return sortOrder === "desc" ? -1 : 1;
     }
-    return sortOrder === "asc" ? b.rate - a.rate : a.rate - b.rate;
+    return sortOrder === "desc" ? b.rate - a.rate : a.rate - b.rate;
   };
 
   return [...games].sort(compareByRating);

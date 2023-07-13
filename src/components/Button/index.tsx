@@ -4,11 +4,12 @@ import { ButtonStyled } from "./styles";
 
 interface ButtonProps {
   children: React.ReactNode;
-  onClick?: () => void;
   linkTo?: string;
   openBlank?: boolean;
   type?: "button" | "submit" | "reset";
   background?: string;
+  disabled?: boolean;
+  onClick?: () => void;
 }
 
 export default function Button({
@@ -18,6 +19,7 @@ export default function Button({
   openBlank,
   type,
   background,
+  disabled,
 }: ButtonProps) {
   if (linkTo) {
     return (
@@ -28,7 +30,12 @@ export default function Button({
   }
 
   return (
-    <ButtonStyled background={background} onClick={onClick} type={type ? type : "button"}>
+    <ButtonStyled
+      disabled={!!disabled}
+      background={background}
+      onClick={onClick}
+      type={type ? type : "button"}
+    >
       {children}
     </ButtonStyled>
   );

@@ -29,7 +29,7 @@ export const FieldContainer = styled.label<{ error: boolean }>`
     position: absolute;
     border: none;
     right: 5%;
-    top: 47%;
+    top: ${({ error }) => (error ? "38%" : "50%")};
     cursor: pointer;
     background: none;
 

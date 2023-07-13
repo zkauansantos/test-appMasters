@@ -1,6 +1,7 @@
 import { database } from "@/firebase/firebase";
-import { arrayRemove, doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
+import { Game } from "./list.api";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +12,7 @@ export default async function handler(
   }
 
   const { userId } = req.query;
-  const { game } = req.body;
+  const { gameId } = req.body;
 
   if (!userId) {
     return res.status(400).json({
@@ -19,15 +20,29 @@ export default async function handler(
     });
   }
 
-  if (!game) {
+  if (!gameId) {
     return res.status(400).json({
-      error: "Game being update not provided.",
+      error: "GameId being update not provided.",
     });
   }
 
-  await updateDoc(doc(database, "favorites", String(userId)), {
-    favorites: arrayRemove(game),
-  });
+  try {
+    const favoritesRef = doc(database, "favorites", String(userId));
+    const favoritesSnapshot = await getDoc(favoritesRef);
 
-  return res.status(204).end();
+    if (favoritesSnapshot.exists()) {
+      const favoritesData = favoritesSnapshot.data();
+      const updatedFavorites = favoritesData.favorites.filter(
+        (gameFav: Game) => gameFav.id !== gameId
+      );
+
+      await updateDoc(doc(database, "favorites", String(userId)), {
+        favorites: updatedFavorites,
+      });
+
+      return res.status(204).end();
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }

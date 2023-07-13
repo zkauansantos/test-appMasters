@@ -7,6 +7,7 @@ import { Game } from "@/services/useLoadGames";
 import useMutateFavoritesGames from "@/services/useMutateFavoritesGames";
 
 import { Heart } from "./styles";
+import axios from "axios";
 
 interface FavoriteProps {
   game: Game;
@@ -35,18 +36,27 @@ export default function Favorite({
     }
 
     if (isFavorite) {
-      setIsFavorite(false);
-
       //remove
-      gameMutate.mutateAsync({ userId, game: game });
+      await gameMutate.mutateAsync({ game, userId });
 
+      setHover(false);
+      setIsFavorite(false);
       return;
     }
 
-    setIsFavorite(true);
     //add
-    gameMutate.mutateAsync({ userId, game: game, toAdd: true });
+
+    gameMutate.mutateAsync({
+      userId,
+      game: { ...game, favorite: true },
+      toAdd: true,
+    });
+    setIsFavorite(true);
   }
+
+  useEffect(() => {
+    setIsFavorite(isFavorite);
+  }, [isFavorite]);
 
   return (
     <Heart

@@ -30,10 +30,14 @@ export default function Auth() {
       .string()
       .required("E-mail é obrigatório")
       .email("E-mail inválido"),
-    password: yup.string().required("Senha obrigatória"),
+    password: yup
+      .string()
+      .required("Senha obrigatória")
+      .min(6, "A senha precisa de no mínimo 6 caracteres"),
     passwordConfirmation: yup
       .string()
       .required("Senha obrigatória")
+      .min(6, "A senha precisa de no mínimo 6 caracteres")
       .oneOf(["", yup.ref("password")], "As senhas precisam ser iguais")
       .when("isSignIn", {
         is: () => isSignIn === true,
@@ -56,7 +60,7 @@ export default function Auth() {
     clearErrors();
     clearAuthError();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSignIn, reset, clearErrors]);
 
   const handleSignIn: SubmitHandler<

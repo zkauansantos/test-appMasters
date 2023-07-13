@@ -76,6 +76,6 @@ export default function useLoadGames(page: number, userId: string) {
     queryFn: () => loadGames(page, userId),
     queryKey: ["games-data", page],
     retry: false,
-    staleTime: 600 * 1000, //10min
+    staleTime: 600 * 500, //5min
   });
 }

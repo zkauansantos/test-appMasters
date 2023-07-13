@@ -13,7 +13,9 @@ async function addGameAsFavorite(userId: string, game: Game) {
 
 async function removeGameOfTheListFavorites(userId: string, game: Game) {
   try {
-    await axios.put(`/api/user/favorites/${userId}/update`, { game });
+    await axios.put(`/api/user/favorites/${userId}/update`, {
+      gameId: game.id,
+    });
   } catch (err) {
     console.log(err);
   }
@@ -31,7 +33,7 @@ export default function useMutateFavoritesGames() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["games-data"]);
+        queryClient.invalidateQueries(["favorited-games"]);
       },
     }
   );

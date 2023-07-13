@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RatingContainer } from "./styles";
 
 import { BsStar, BsStarFill } from "react-icons/bs";
@@ -30,21 +30,35 @@ export default function Rating({
     }
 
     if (currentRating === index) {
-      setCurrentRating(0);
+      await axios.delete(`/api/user/rating/${userId}/delete`, {
+        headers: {
+          "game-id": game.id,
+        },
+      });
 
-      await axios.put(`/api/user/rating/${userId}/change-rating`, { game });
+      setCurrentRating(0);
       return;
     }
 
-    await axios.post(`/api/user/rating/${userId}/rate`, {
+    const ratingsSaveds = await axios.get(`/api/user/rating/${userId}/list`);
+    const currentRateDiferentRatingSaved = ratingsSaveds.data.some(
+      (rating: any) => {
+        return rating.rate !== index;
+      }
+    );
+
+    if (currentRateDiferentRatingSaved) {
+      return await axios.put(`/api/user/rating/${userId}/update`, {
+        gameId: game.id,
+        newRate: index,
+      });
+    }
+
+    return await axios.post(`/api/user/rating/${userId}/rate`, {
       gameId: game.id,
       rate: index,
     });
   }
-
-  useEffect(() => {
-    setCurrentRating(currentRating);
-  }, [currentRating]);
 
   return (
     <RatingContainer>
@@ -52,8 +66,8 @@ export default function Rating({
         <button
           key={`${Math.random()}-${index}`}
           onClick={() => {
-            setCurrentRating(index + 1);
             handleRating(index + 1, game);
+            setCurrentRating(index + 1);
           }}
           onMouseEnter={() => {
             setHover(index + 1);

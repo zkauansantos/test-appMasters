@@ -7,12 +7,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "PUT") {
+  if (req.method !== "DELETE") {
     return res.status(405).end();
   }
 
   const { userId } = req.query;
-  const { gameId } = req.body;
+  const { "game-id": gameId } = req.headers;
 
   if (!userId) {
     return res.status(400).json({
@@ -22,7 +22,7 @@ export default async function handler(
 
   if (!gameId) {
     return res.status(400).json({
-      error: "GameId being update not provided.",
+      error: "GameId being update not provided in header.",
     });
   }
 
@@ -33,7 +33,7 @@ export default async function handler(
     if (favoritesSnapshot.exists()) {
       const favoritesData = favoritesSnapshot.data();
       const updatedFavorites = favoritesData.favorites.filter(
-        (gameFav: Game) => gameFav.id !== gameId
+        (gameFav: Game) => gameFav.id !== Number(gameId)
       );
 
       await updateDoc(doc(database, "favorites", String(userId)), {

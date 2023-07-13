@@ -13,8 +13,10 @@ async function addGameAsFavorite(userId: string, game: Game) {
 
 async function removeGameOfTheListFavorites(userId: string, game: Game) {
   try {
-    await axios.put(`/api/user/favorites/${userId}/update`, {
-      gameId: game.id,
+    await axios.delete(`/api/user/favorites/${userId}/delete`, {
+      headers: {
+        'game-id': game.id,
+      },
     });
   } catch (err) {
     console.log(err);

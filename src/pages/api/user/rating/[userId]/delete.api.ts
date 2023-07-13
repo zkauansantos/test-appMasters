@@ -41,6 +41,6 @@ export default async function handler(
       return res.status(204).end();
     }
   } catch (err) {
-    console.log(err);
+    return res.status(500).end();
   }
 }

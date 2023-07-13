@@ -38,23 +38,21 @@ export default async function handler(
     if (ratingsSnapshot.exists()) {
       const ratingsData = ratingsSnapshot.data().ratings;
 
-      const ratingExists = ratingsData.some(
+      const ratingIndex = ratingsData.findIndex(
         (rating: any) => rating.gameId === gameId
       );
 
-      if (ratingExists) {
-        const lastRates = ratingsData.filter(
-          (rating: any) => rating.gameId !== gameId
-        );
+      if (ratingIndex !== -1) {
+        ratingsData[ratingIndex].rate = newRate;
 
         await updateDoc(doc(database, "ratings", String(userId)), {
-          ratings: [...lastRates, { gameId, rate: newRate }],
+          ratings: ratingsData,
         });
 
         return res.status(204).end();
       }
     }
   } catch (err) {
-    console.log(err);
+    return res.status(500).end()
   }
 }

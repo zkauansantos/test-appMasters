@@ -48,7 +48,9 @@ export default async function handler(
     await setDoc(doc(collectionRef, String(userId)), {
       ratings: [...ratings, { gameId, rate }],
     });
-  } catch (err) {}
 
-  return res.status(201);
+    return res.status(201).end();
+  } catch (err) {
+    return res.status(500).end();
+  }
 }

@@ -11,6 +11,8 @@ import Header from "@/components/Header";
 import { GlobalStyles } from "@/styles/global";
 import { theme } from "@/styles/theme";
 import { ThemeProvider } from "styled-components";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainerStyled } from "@/styles/shared/ToastContainerStyled";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -27,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <GlobalStyles />
             <Header />
             <Component {...pageProps} />
+            <ToastContainerStyled position="bottom-center" limit={3} />
           </ThemeProvider>
         </AuthProvider>
       </QueryClientProvider>

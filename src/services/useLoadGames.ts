@@ -1,6 +1,7 @@
 import { api } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export interface Game {
   id: number;
@@ -19,10 +20,11 @@ interface Rating {
 }
 
 export async function loadGames(page: number, userId: string) {
-  try {
-    let userRatings: Rating[] = [];
-    let gamesFavorites: Game[] = [];
+  let userRatings: Rating[] = [];
+  let gamesFavorites: Game[] = [];
+  let errorInFirebase = false;
 
+  try {
     if (userId) {
       const [responseRatings, responseFavoritesIds] = await Promise.all([
         await axios.get(`/api/user/rating/${userId}/list`),
@@ -32,7 +34,13 @@ export async function loadGames(page: number, userId: string) {
       userRatings = responseRatings.data;
       gamesFavorites = responseFavoritesIds.data;
     }
+  } catch {
+    errorInFirebase = true;
+    userRatings = [];
+    gamesFavorites = [];
+  }
 
+  try {
     const { data } = await api.get("/data");
 
     const gamesPerPage = data.slice((page - 1) * 9, page * 9);
@@ -59,12 +67,18 @@ export async function loadGames(page: number, userId: string) {
       };
     });
 
+    if (errorInFirebase) {
+      toast.error(
+        "Ops! Erro ao verificar os favoritos ou avaliação dos jogos."
+      );
+    }
+
     return {
       games: gamesWithRatingAndFavorite,
       totalCount,
       genres,
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       error,
     };

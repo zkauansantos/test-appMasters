@@ -17,10 +17,18 @@ export default async function handler(
     });
   }
 
-  const collectionRef = doc(database, "ratings", String(userId));
-  const querySnapshot = await getDoc(collectionRef);
+  try {
+    const collectionRef = doc(database, "ratings", String(userId));
+    const querySnapshot = await getDoc(collectionRef);
 
-  const ratings = querySnapshot.data()?.ratings || [];
+    if (querySnapshot.exists()) {
+      const ratings = querySnapshot.data().ratings || [];
 
-  return res.status(200).json(ratings);
+      return res.status(200).json(ratings);
+    }
+
+    return res.status(200).json([]);
+  } catch {
+    return res.status(500).end();
+  }
 }

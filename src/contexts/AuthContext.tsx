@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, use } from "react";
 
 import axios, { AxiosError } from "axios";
 
@@ -26,7 +26,14 @@ type AuthContextData = {
   logout: () => Promise<void>;
   user: User | null;
   isAuthenticated: boolean;
-  authError: null | { message: string };
+  authError: null | AuthErrorState;
+};
+
+type AuthErrorState = {
+  message: string;
+  showInEmail?: boolean;
+  showInPassword?: boolean;
+  showInButton?: boolean;
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -35,7 +42,7 @@ let authChannel: BroadcastChannel;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [authError, setAuthError] = useState<null | { message: string }>(null);
+  const [authError, setAuthError] = useState<null | AuthErrorState>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -76,17 +83,25 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
-          setAuthError({ message: "E-mail ou senha incorretos" });
+          setAuthError({
+            message: "E-mail ou senha incorretos",
+            showInEmail: true,
+            showInPassword: true,
+          });
           return;
         }
 
         if (error.response?.status === 404) {
-          setAuthError({ message: "Usuário não cadastrado" });
+          setAuthError({
+            message: "Usuário não cadastrado",
+            showInEmail: true,
+          });
           return;
         }
 
         return setAuthError({
           message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
+          showInButton: true,
         });
       }
     }
@@ -106,16 +121,17 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       router.push("/");
     } catch (error) {
       if (error instanceof AxiosError) {
-        if (
-          error.response?.status === 400 &&
-          error.response.data.error.includes("already")
-        ) {
-          setAuthError({ message: "E-mail já cadastrado" });
+        if (error.response?.status === 409) {
+          return setAuthError({
+            message: "E-mail já cadastrado",
+            showInEmail: true,
+          });
         }
       }
 
       return setAuthError({
         message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
+        showInButton: true,
       });
     }
   }

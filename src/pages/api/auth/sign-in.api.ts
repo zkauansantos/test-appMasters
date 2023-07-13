@@ -35,33 +35,37 @@ export default async function handler(
       password
     );
 
-    const userProfile = await getDoc(
-      doc(database, "users", userCredentials.user.uid)
-    );
+    const userRef = doc(database, "users", userCredentials.user.uid);
+    const userProfileSnapshot = await getDoc(userRef);
 
-    setCookie({ res }, "user-id", userCredentials.user.uid, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
+    if (userProfileSnapshot.exists()) {
+      setCookie({ res }, "user-id", userCredentials.user.uid, {
+        maxAge: 60 * 60 * 24 * 7, // 7days
+        path: "/",
+      });
+
+      setCookie({ res }, "user-name", userProfileSnapshot.data()!.name, {
+        maxAge: 60 * 60 * 24 * 7, // 7days
+        path: "/",
+      });
+
+      setCookie({ res }, "user-email", email, {
+        maxAge: 60 * 60 * 24 * 7, // 7days
+        path: "/",
+      });
+
+      const user = {
+        id: userCredentials.user.uid,
+        name: userProfileSnapshot.data()!.name,
+        email: email,
+        photoUrl: null,
+      };
+
+      return res.status(200).json(user);
+    }
+    return res.status(404).json({
+      error: "User not found.",
     });
-
-    setCookie({ res }, "user-name", userProfile.data()!.name, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
-    });
-
-    setCookie({ res }, "user-email", email, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
-    });
-
-    const user = {
-      id: userCredentials.user.uid,
-      name: userProfile.data()!.name,
-      email: email,
-      photoUrl: null,
-    };
-
-    return res.status(200).json(user);
   } catch (error) {
     if (error instanceof FirebaseError) {
       if (error.code === "auth/wrong-password") {

@@ -5,6 +5,7 @@ import useAnimatedUnmount from "@/hooks/useAnimatedUnmount";
 import Button from "../Button";
 
 import { ModalContent, Overlay } from "./styles";
+import { useEffect } from "react";
 
 interface ModalProps {
   isVisible: boolean;
@@ -14,6 +15,20 @@ interface ModalProps {
 export default function Modal({ isVisible, onToggleVisible }: ModalProps) {
   const { shouldRender, animatedElementRef } = useAnimatedUnmount(isVisible);
   const router = useRouter();
+
+  useEffect(() => {
+    function handleCloseModal(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onToggleVisible(false);
+      }
+    }
+
+    document.addEventListener("keyup", handleCloseModal);
+
+    return () => {
+      document.removeEventListener("keyup", handleCloseModal);
+    };
+  }, [onToggleVisible]);
 
   if (!shouldRender) {
     return null;

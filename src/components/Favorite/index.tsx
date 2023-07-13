@@ -7,7 +7,6 @@ import { Game } from "@/services/useLoadGames";
 import useMutateFavoritesGames from "@/services/useMutateFavoritesGames";
 
 import { Heart } from "./styles";
-import axios from "axios";
 
 interface FavoriteProps {
   game: Game;
@@ -37,10 +36,10 @@ export default function Favorite({
 
     if (isFavorite) {
       //remove
-      await gameMutate.mutateAsync({ game, userId });
-
-      setHover(false);
       setIsFavorite(false);
+      setHover(false);
+
+      await gameMutate.mutateAsync({ game, userId });
       return;
     }
 

@@ -22,7 +22,7 @@ export default function Favorites() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
   const [sortOrderByRating, setSortOrderByRating] = useState<"asc" | "desc">(
-    "asc"
+    "desc"
   );
 
   const filteredFavoritedGames = useFilteredGames(
@@ -46,7 +46,7 @@ export default function Favorites() {
           <Filters
             order={sortOrderByRating}
             onOrderByRating={() =>
-              setSortOrderByRating((prev) => (prev === "asc" ? "desc" : "asc"))
+              setSortOrderByRating((prev) => (prev === "desc" ? "asc" : "desc"))
             }
             genres={data?.genresFavoritedGames || []}
             setSelectedGenre={setSelectedGenre}
@@ -54,8 +54,6 @@ export default function Favorites() {
             setSearchTerm={setSearchTerm}
           />
         )}
-
-        {isLoading && <Loader size="12rem" />}
 
         {!isLoading && (
           <S.GridCards>

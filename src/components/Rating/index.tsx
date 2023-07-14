@@ -39,8 +39,8 @@ export default function Rating({
 
     const ratingsSaveds = await axios.get(`/api/user/rating/${userId}/list`);
     const currentRateDiferentRatingSaved = ratingsSaveds.data.some(
-      (rating: { rate: number }) => {
-        return rating.rate !== index;
+      (rating: { rate: number; gameId: number }) => {
+        return rating.rate !== index && rating.gameId === game.id;
       }
     );
 

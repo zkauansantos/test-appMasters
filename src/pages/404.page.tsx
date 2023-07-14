@@ -1,9 +1,12 @@
-import Button from "@/components/Button"
-import styled from "styled-components"
+import Button from "@/components/Button";
+import styled from "styled-components";
+
+import Image from "next/image";
+import padlock from "@/assets/icons/padlock.svg";
 
 const ContainerNotFound = styled.main`
-  height: 100vh;
-  width: 100vw;
+  height: 70vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,16 +18,15 @@ const ContainerNotFound = styled.main`
     font-size: clamp(2.6rem, 3.4vw, 4rem);
     text-align: center;
   }
-`
+`;
 
 export default function NotFoundPage() {
   return (
     <ContainerNotFound>
       <h1>Desculpe essa rota não existe.</h1>
 
-      <Button linkTo="/">
-        Voltar pra lista de jogos
-      </Button>
+      <Image src={padlock} width={200} height={200} alt="empty-box" priority />
+      <Button linkTo="/">Voltar pra lista de jogos</Button>
     </ContainerNotFound>
-  )
+  );
 }

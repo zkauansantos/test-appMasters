@@ -13,10 +13,11 @@ export default function EmptyFavorites() {
   return (
     <EmptyContainer>
       <Image src={emptyBox} width={200} height={200} alt="empty-box" priority />
-      <p>
-        Você ainda não tem nenhum game favorito cadastrado!
-        Volte para a home e adicione alguns games na sua lista!
-      </p>
+
+      <div>
+        <p>Você ainda não tem nenhum game favorito cadastrado!</p>
+        <p>Volte para a home e adicione alguns games na sua lista!</p>
+      </div>
 
       <Button onClick={() => router.push("/")}>Voltar</Button>
     </EmptyContainer>

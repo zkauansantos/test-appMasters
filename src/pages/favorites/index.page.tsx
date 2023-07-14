@@ -1,23 +1,25 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { parseCookies } from "nookies";
+
+import { AuthContext } from "@/contexts/AuthContext";
 
 import useFilteredGames from "@/hooks/useFilteredGames";
 import { Game } from "@/services/useLoadGames";
 import useFavoritedGames from "@/services/useFavoritesGames";
+import sortGamesByRating from "@/utils/sortGamesByRating";
 
 import Filters from "@/components/Filters";
 import EmptySearch from "@/components/EmptySearch";
-import Loader from "@/components/Loader";
 import GameCard from "@/components/GameCard";
+import EmptyFavorites from "@/components/EmptyFavorites";
+import DontAuthenticated from "@/components/DontAuthenticated";
 
 import * as S from "@/styles/shared/Gridcards";
-import EmptyFavorites from "@/components/EmptyFavorites";
-import sortGamesByRating from "@/utils/sortGamesByRating";
 
 export default function Favorites() {
   const { "user-id": userId } = parseCookies();
-
+  const { isAuthenticated } = useContext(AuthContext);
   const { data, isLoading } = useFavoritedGames(userId);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("");
@@ -41,7 +43,7 @@ export default function Favorites() {
   return (
     <S.Container>
       <S.Content>
-        <h1>Seus games favoritos</h1>
+        {!!isAuthenticated && <h1>Seus games favoritos</h1>}
         {!isLoading && !!hasFavorites && (
           <Filters
             order={sortOrderByRating}
@@ -55,7 +57,7 @@ export default function Favorites() {
           />
         )}
 
-        {!isLoading && (
+        {!isLoading && !!isAuthenticated && (
           <S.GridCards>
             {sortedGames.map((game: Game) => (
               <GameCard key={game.id} game={game} />
@@ -68,6 +70,8 @@ export default function Favorites() {
             {!hasFavorites && <EmptyFavorites />}
           </S.GridCards>
         )}
+
+        {!isAuthenticated && <DontAuthenticated />}
       </S.Content>
     </S.Container>
   );

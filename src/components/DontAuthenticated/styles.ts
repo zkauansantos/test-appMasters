@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-export const EmptyContainer = styled.div`
+export const DontAuthenticatedContainer = styled.div`
   position: absolute;
-  top: 20%;
+  top: 15%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -13,7 +13,7 @@ export const EmptyContainer = styled.div`
   width: 100%;
 
   @media screen and (max-width: 450px) {
-    top: 15%;
+    top: 5%;
 
     img {
       width: 45%;

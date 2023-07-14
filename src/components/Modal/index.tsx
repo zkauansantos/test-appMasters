@@ -43,8 +43,8 @@ export default function Modal({ isVisible, onToggleVisible }: ModalProps) {
 
         <div>
           <p>
-            Que tal se cadastrar ou fazer login pra adicionar uns games na lista
-            de favoritos ?
+            Que tal se cadastrar ou fazer login para avaliar ou favoritar alguns
+            games ?
           </p>
         </div>
 

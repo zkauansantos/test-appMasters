@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import logo from "../../assets/imgs/logo.png";
 
@@ -17,11 +17,17 @@ import {
   ListNavigations,
 } from "./styles";
 import { useWidth } from "@/hooks/useWidth";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const width = useWidth();
   const { user, logout } = useContext(AuthContext);
+  const path = usePathname();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [path]);
 
   return (
     <HeaderContainer>

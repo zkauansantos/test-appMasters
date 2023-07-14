@@ -1,11 +1,14 @@
 import styled from "styled-components";
 
 export const Container = styled.main`
-  height: 80vh;
-  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 128px;
+
+  @media screen and (max-width: 600px) {
+    margin-top: 48px;
+  }
 `;
 
 export const ContainerForm = styled.form`
@@ -15,6 +18,10 @@ export const ContainerForm = styled.form`
   background-color: ${({ theme }) => theme.colors.zinc["950"]};
   border: 1px solid ${({ theme }) => theme.colors.indigo["600"]};
   border-radius: 4px;
+
+  @media screen and (max-width: 460px) {
+    min-width: 320px;
+  }
 
   h1 {
     align-self: self-start;

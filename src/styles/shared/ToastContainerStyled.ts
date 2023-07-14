@@ -6,11 +6,12 @@ export const ToastContainerStyled = styled(ToastContainer)`
     width: 100%;
     max-width: 32rem;
     text-align: center;
-    margin-bottom: 64px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-self: center;
+    margin-bottom: 6.4rem;
+
+    @media screen and (max-width: 600px) {
+      max-width: initial;
+      padding: 0 2.4rem;
+    }
   }
 
   .Toastify__toast {

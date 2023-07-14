@@ -34,38 +34,18 @@ export default async function handler(
       email,
       password
     );
+    const { uid, email: emailDatabase } = userCredentials.user;
 
-    const userRef = doc(database, "users", userCredentials.user.uid);
-    const userProfileSnapshot = await getDoc(userRef);
+    const userProfile = await getDoc(doc(database, "users", uid));
 
-    if (userProfileSnapshot.exists()) {
-      setCookie({ res }, "user-id", userCredentials.user.uid, {
-        maxAge: 60 * 60 * 24 * 7, // 7days
-        path: "/",
-      });
-
-      setCookie({ res }, "user-name", userProfileSnapshot.data()!.name, {
-        maxAge: 60 * 60 * 24 * 7, // 7days
-        path: "/",
-      });
-
-      setCookie({ res }, "user-email", email, {
-        maxAge: 60 * 60 * 24 * 7, // 7days
-        path: "/",
-      });
-
-      const user = {
-        id: userCredentials.user.uid,
-        name: userProfileSnapshot.data()!.name,
-        email: email,
-        photoUrl: null,
-      };
-
-      return res.status(200).json(user);
-    }
-    return res.status(404).json({
-      error: "User not found.",
-    });
+    const userLogged = {
+      id: uid,
+      name: userProfile.data()?.name,
+      avatarUrl: userProfile.data()?.avatarUrl,
+      email: emailDatabase,
+    };
+    
+    return res.status(200).json(userLogged);
   } catch (error) {
     if (error instanceof FirebaseError) {
       if (error.code === "auth/wrong-password") {

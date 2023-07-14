@@ -3,10 +3,15 @@ import { useState, createContext, useEffect, use } from "react";
 
 import axios, { AxiosError } from "axios";
 
-import { signOut } from "firebase/auth";
-import { auth } from "@/firebase/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { auth, database } from "@/firebase/firebase";
 
 import { destroyCookie, parseCookies } from "nookies";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -41,34 +46,35 @@ export const AuthContext = createContext({} as AuthContextData);
 let authChannel: BroadcastChannel;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any>(null);
   const [authError, setAuthError] = useState<null | AuthErrorState>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    authChannel = new BroadcastChannel("auth");
+  // useEffect(() => {
+  //   authChannel = new BroadcastChannel("auth");
 
-    authChannel.onmessage = (message) => {
-      switch (message.data) {
-        case "logOut":
-          logout();
-          break;
-        default:
-          break;
+  //   authChannel.onmessage = (message) => {
+  //     switch (message.data) {
+  //       case "logOut":
+  //         logout();
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   };
+  // });
+
+  useEffect(() => {
+    function loadStorage() {
+      const storageUser = localStorage.getItem("user");
+
+      if (storageUser) {
+        setUser(JSON.parse(storageUser));
       }
-    };
-  });
-
-  useEffect(() => {
-    const { "user-name": name, "user-email": email } = parseCookies();
-
-    if (email && name) {
-      setUser({
-        name,
-        email,
-      });
     }
-  }, [router]);
+
+    loadStorage();
+  }, []);
 
   async function signIn(email: string, password: string) {
     try {
@@ -78,7 +84,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       });
 
       setUser(userLogged);
-
+      localStorage.setItem("user", JSON.stringify(userLogged));
       router.push("/");
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -116,35 +122,18 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       });
 
       setUser(userRegistered);
-
-      await signIn(email, password);
+      localStorage.setItem("user", JSON.stringify(userRegistered));
       router.push("/");
     } catch (error) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 409) {
-          return setAuthError({
-            message: "E-mail já cadastrado",
-            showInEmail: true,
-          });
-        }
-      }
-
-      return setAuthError({
-        message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
-        showInButton: true,
-      });
+      console.log(error);
     }
   }
 
   async function logout() {
     await signOut(auth);
-    destroyCookie(undefined, "user-name");
-    destroyCookie(undefined, "user-email");
-    destroyCookie(undefined, "user-id");
-
-    authChannel.postMessage("logOut");
-
+    localStorage.removeItem("user");
     setUser(null);
+    router.push("/");
   }
 
   return (

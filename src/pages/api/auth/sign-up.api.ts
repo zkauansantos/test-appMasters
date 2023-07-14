@@ -45,41 +45,26 @@ export default async function handler(
   }
 
   try {
-    const userCredentials = await createUserWithEmailAndPassword(
+    const userData = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+    const { uid, email: emailRegistered } = userData.user;
 
-    await setDoc(doc(database, "users", userCredentials.user.uid), {
-      name: name,
-      avatarUrl: null,
-      email,
-    });
-
-    setCookie({ res }, "user-id", userCredentials.user.uid, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
-    });
-
-    setCookie({ res }, "user-name", name, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
-    });
-
-    setCookie({ res }, "user-email", email, {
-      maxAge: 60 * 60 * 24 * 7, // 7days
-      path: "/",
-    });
-
-    const user = {
-      id: userCredentials.user.uid,
+    await setDoc(doc(database, "users", uid), {
       name,
-      email,
-      photoUrl: null,
+      avatarUrl: null,
+    });
+
+    const userCreated = {
+      uid: uid,
+      name: name,
+      email: emailRegistered,
+      avatarUrl: null,
     };
 
-    return res.status(200).json(user);
+    return res.status(200).json(userCreated);
   } catch (error) {
     return res.status(500).end();
   }

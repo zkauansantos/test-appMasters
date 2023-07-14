@@ -26,7 +26,7 @@ export const Overlay = styled.div<{ isLeaving: boolean }>`
   top: 0;
   left: 0;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
@@ -42,7 +42,7 @@ export const Overlay = styled.div<{ isLeaving: boolean }>`
 
 export const ModalContent = styled.div<{ isLeaving: boolean }>`
   border-radius: 4px;
-  width: 500px;
+  max-width: 500px;
   height: 300px;
   display: flex;
   flex-direction: column;
@@ -53,6 +53,10 @@ export const ModalContent = styled.div<{ isLeaving: boolean }>`
   border: 1px solid ${({ theme }) => theme.colors.indigo["600"]};
   animation: ${scaleIn} 0.5s ease;
   color: ${({ theme }) => theme.colors.neutral["50"]};
+
+  @media screen and (max-width: 500px) {
+    max-width: 95%;
+  }
 
   ${({ isLeaving }) =>
     isLeaving &&

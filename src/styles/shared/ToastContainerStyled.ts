@@ -6,6 +6,11 @@ export const ToastContainerStyled = styled(ToastContainer)`
     width: 100%;
     max-width: 32rem;
     text-align: center;
+    margin-bottom: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
   }
 
   .Toastify__toast {

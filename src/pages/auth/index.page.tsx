@@ -10,6 +10,9 @@ import Field from "@/components/Field";
 import Button from "@/components/Button";
 
 import { Container, ContainerForm } from "./styles";
+import { parseCookies } from "nookies";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Auth() {
   const {
@@ -25,6 +28,14 @@ export default function Auth() {
     register,
     setShowPassword,
   } = useAuthPage();
+  const { "user-id": userId } = parseCookies();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userId) {
+      router.push("/");
+    }
+  }, [userId, router]);
 
   return (
     <>

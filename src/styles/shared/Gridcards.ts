@@ -69,7 +69,7 @@ const GridCards = styled.div`
     grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 
-  @media screen and (max-width: 675px) {
+  @media screen and (max-width: 685px) {
     grid-template-columns: repeat(1, minmax(200px, 1fr));
   }
 `;

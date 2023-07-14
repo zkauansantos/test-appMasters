@@ -37,7 +37,7 @@ export default function useMutateFavoritesGames() {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["favorited-games"]);
+        queryClient.refetchQueries();
       },
     }
   );

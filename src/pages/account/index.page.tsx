@@ -47,9 +47,9 @@ export default function Account() {
               <input type="text" placeholder="Nome" {...register("name")} />
             </Field> */}
 
-            <Field errors={{}} name="name">
+            {/* <Field errors={{}} name="name">
               <input type="file" {...register("picture")} />
-            </Field>
+            </Field> */}
           </div>
 
           <Button type="submit">Editar</Button>

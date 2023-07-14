@@ -44,7 +44,7 @@ export default function Favorite({
     }
 
     //add
-
+    // I added the entire game to avoid depending on the games API request for my favorites page.
     gameMutate.mutateAsync({
       userId,
       game: { ...game, favorite: true },

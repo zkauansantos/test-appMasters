@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+
 import { BsArrowDown, BsArrowUp } from "react-icons/bs";
 
 import Button from "../Button";
@@ -22,6 +25,8 @@ export default function Filters({
   setSelectedGenre,
   onOrderByRating,
 }: FiltersProps) {
+  const { isAuthenticated } = useContext(AuthContext);
+
   function renderGenres() {
     return genres.map((genre, i) => (
       <option key={`${genre} - ${i}`} value={genre}>
@@ -39,13 +44,15 @@ export default function Filters({
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <div className="order-fetching">
-        {isRefetching && <Loader size="2rem" />}
-        <Button onClick={onOrderByRating}>
-          {order === "asc" && <BsArrowUp />}
-          {order === "desc" && <BsArrowDown />}
-        </Button>
-      </div>
+      {!!isAuthenticated && (
+        <div className="order-fetching">
+          {isRefetching && <Loader size="2rem" />}
+          <Button onClick={onOrderByRating}>
+            {order === "asc" && <BsArrowUp />}
+            {order === "desc" && <BsArrowDown />}
+          </Button>
+        </div>
+      )}
 
       <select
         defaultValue=""

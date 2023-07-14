@@ -14,7 +14,16 @@ export const ButtonStyled = styled.button<{ background: string | undefined }>`
   margin-top: 1.6;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.4;
+  }
+
+  &:disabled {
+    background: ${({ theme }) => theme.colors.neutral["500"]};
+    cursor: not-allowed;
+
+    :hover {
+      opacity: 0.8;
+    }
   }
 `;

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import logo from "../../assets/imgs/logo.png";
 
@@ -9,20 +9,29 @@ import { AiOutlineHome, AiOutlineHeart, AiOutlineLogout } from "react-icons/ai";
 
 import { AuthContext } from "@/contexts/AuthContext";
 
-import { HeaderContainer, HeaderContent } from "./styles";
+import {
+  Hamburguer,
+  HamburguerContainer,
+  HeaderContainer,
+  HeaderContent,
+  ListNavigations,
+} from "./styles";
+import { useWidth } from "@/hooks/useWidth";
 
 export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const width = useWidth();
   const { user, logout } = useContext(AuthContext);
 
   return (
     <HeaderContainer>
       <HeaderContent>
         <Link href="/">
-          <Image src={logo} width={120} height={120} alt="logo" priority/>
+          <Image src={logo} width={120} height={120} alt="logo" priority />
         </Link>
 
         <nav>
-          <ul>
+          <ListNavigations width={width} menuOpen={menuOpen}>
             <li>
               <Link href="/">
                 <AiOutlineHome size={18} />
@@ -42,13 +51,19 @@ export default function Header() {
               </Link>
             </li>
             {!!user && (
-              <li>
+              <li className="logout">
                 <button onClick={() => logout()}>
                   <AiOutlineLogout size={24} color="#fff" />
                 </button>
               </li>
             )}
-          </ul>
+          </ListNavigations>
+
+          {width <= 1000 && (
+            <HamburguerContainer onClick={() => setMenuOpen((prev) => !prev)}>
+              <Hamburguer menuOpen={menuOpen} />
+            </HamburguerContainer>
+          )}
         </nav>
       </HeaderContent>
     </HeaderContainer>

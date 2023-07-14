@@ -64,6 +64,10 @@ export const GameCardContainer = styled.div`
     font-style: italic;
   }
 
+  @media screen and (max-width: 685px) {
+    max-width: 50rem;
+  }
+
   @media screen and (max-width: 350px) {
     max-width: 30.1rem;
     img {

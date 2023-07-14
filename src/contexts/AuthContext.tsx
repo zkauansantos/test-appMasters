@@ -1,80 +1,40 @@
 import { useRouter } from "next/navigation";
-import { useState, createContext, useEffect, use } from "react";
+import { useState, createContext, useEffect } from "react";
 
 import axios, { AxiosError } from "axios";
 
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-import { auth, database } from "@/firebase/firebase";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase/firebase";
 
-import { destroyCookie, parseCookies } from "nookies";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { destroyCookie, parseCookies, setCookie } from "nookies";
+import { queryClient } from "@/lib/queryClient";
+import { AuthContextData, AuthErrorState, User } from "./types/authTypes";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-type User = {
-  id?: string;
-  name?: string;
-  email: string;
-  photoUrl?: string;
-};
-
-type AuthContextData = {
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (name: string, email: string, password: string) => Promise<void>;
-  clearAuthError: () => void;
-  logout: () => Promise<void>;
-  user: User | null;
-  isAuthenticated: boolean;
-  authError: null | AuthErrorState;
-};
-
-type AuthErrorState = {
-  message: string;
-  showInEmail?: boolean;
-  showInPassword?: boolean;
-  showInButton?: boolean;
-};
-
 export const AuthContext = createContext({} as AuthContextData);
 
-let authChannel: BroadcastChannel;
-
 export default function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [authError, setAuthError] = useState<null | AuthErrorState>(null);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   authChannel = new BroadcastChannel("auth");
-
-  //   authChannel.onmessage = (message) => {
-  //     switch (message.data) {
-  //       case "logOut":
-  //         logout();
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   };
-  // });
+  const {
+    "user-name": name,
+    "user-id": userId,
+    "user-photo": userPhoto,
+  } = parseCookies();
 
   useEffect(() => {
-    function loadStorage() {
-      const storageUser = localStorage.getItem("user");
-
-      if (storageUser) {
-        setUser(JSON.parse(storageUser));
-      }
+    if (userId) {
+      setUser({
+        id: userId,
+        name,
+        photoUrl: userPhoto,
+      });
     }
-
-    loadStorage();
-  }, []);
+  }, [router, name, userPhoto, userId]);
 
   async function signIn(email: string, password: string) {
     try {
@@ -82,9 +42,11 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         email,
         password,
       });
-
       setUser(userLogged);
-      localStorage.setItem("user", JSON.stringify(userLogged));
+      setCookie(undefined, "user-id", userLogged.id);
+      setCookie(undefined, "user-name", userLogged.name);
+      setCookie(undefined, "user-photo", userLogged.photoUrl);
+      queryClient.resetQueries();
       router.push("/");
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -122,17 +84,36 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       });
 
       setUser(userRegistered);
-      localStorage.setItem("user", JSON.stringify(userRegistered));
+      setCookie(undefined, "user-id", userRegistered.id);
+      setCookie(undefined, "user-name", userRegistered.name);
+      setCookie(undefined, "user-photo", userRegistered.photoUrl);
+      queryClient.resetQueries();
       router.push("/");
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          return setAuthError({
+            message: "E-mail já cadastrado",
+            showInEmail: true,
+          });
+        }
+      }
+
+      return setAuthError({
+        message: "Desculpe ocorreu um erro inesperado, volte mais tarde",
+        showInButton: true,
+      });
     }
   }
 
   async function logout() {
     await signOut(auth);
-    localStorage.removeItem("user");
+    destroyCookie(undefined, "user-id");
+    destroyCookie(undefined, "user-name");
+    destroyCookie(undefined, "user-photo");
+
     setUser(null);
+    queryClient.resetQueries();
     router.push("/");
   }
 
@@ -146,6 +127,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         signUp,
         signIn,
         logout,
+        setUser,
       }}
     >
       {children}

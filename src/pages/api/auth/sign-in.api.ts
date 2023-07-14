@@ -41,10 +41,10 @@ export default async function handler(
     const userLogged = {
       id: uid,
       name: userProfile.data()?.name,
-      avatarUrl: userProfile.data()?.avatarUrl,
+      photoUrl: userProfile.data()?.photoUrl,
       email: emailDatabase,
     };
-    
+
     return res.status(200).json(userLogged);
   } catch (error) {
     if (error instanceof FirebaseError) {

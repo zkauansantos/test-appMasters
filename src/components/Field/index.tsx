@@ -1,7 +1,6 @@
-import { InputHTMLAttributes } from "react";
+import { Input } from "@/styles/shared/Input";
 import { FieldContainer, InputError } from "./styles";
-import { FieldName, RegisterOptions, UseFormRegister } from "react-hook-form";
-
+import { UseFormRegister } from "react-hook-form";
 interface FieldProps {
   name: string;
   errors: any;
@@ -21,7 +20,12 @@ export default function Field({
 }: FieldProps) {
   return (
     <FieldContainer error={!!errors?.[name]}>
-      <input type={type} placeholder={placeholder} {...register(name)} />
+      <Input
+        error={!!errors?.[name]}
+        type={type}
+        placeholder={placeholder}
+        {...register(name)}
+      />
       {children}
       {!!errors[name] && <InputError>{errors[name].message}</InputError>}
     </FieldContainer>

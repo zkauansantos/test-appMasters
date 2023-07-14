@@ -54,14 +54,14 @@ export default async function handler(
 
     await setDoc(doc(database, "users", uid), {
       name,
-      avatarUrl: null,
+      photoUrl: null,
     });
 
     const userCreated = {
-      uid: uid,
+      id: uid,
       name: name,
       email: emailRegistered,
-      avatarUrl: null,
+      photoUrl: null,
     };
 
     return res.status(200).json(userCreated);

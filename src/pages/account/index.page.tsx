@@ -122,7 +122,7 @@ export default function Account() {
                 ? user.photoUrl
                 : avatar
             }
-            width={650}
+            width={550}
             height={400}
             alt="photo-user"
             priority

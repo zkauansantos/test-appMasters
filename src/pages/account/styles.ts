@@ -24,7 +24,10 @@ export const AccountWrapper = styled.div`
   @media screen and (max-width: 1000px) {
     flex-direction: column-reverse;
     margin-top: 6.4rem;
-    padding-bottom: 6.4rem;
+
+    img {
+      height: 100%;
+    }
   }
 `;
 

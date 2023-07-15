@@ -30,6 +30,10 @@ Para acessar esse projeto em produção acesse:
 
 [<img src="./public/auth.png"/>]()
 
+## Account Page
+
+[<img src="./public/account.png"/>]()
+
 ## 🪹 Empty List
 
 [<img src="./public/empty.png"/>]()

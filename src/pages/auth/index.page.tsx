@@ -102,15 +102,17 @@ export default function Auth() {
           </div>
 
           <div className="suggestions">
-            <p>{isSignIn ? "Não tem login?" : "Já tem login?"}</p>
-            <button
-              className="changer"
-              disabled={isLoading || isSubmitting}
-              type="button"
-              onClick={() => setIsSignIn((prev) => !prev)}
-            >
-              {isSignIn ? "Cadastre-se" : "Entrar"}
-            </button>
+            <div>
+              <p>{isSignIn ? "Não tem login?" : "Já tem login?"}</p>
+              <button
+                className="changer"
+                disabled={isLoading || isSubmitting}
+                type="button"
+                onClick={() => setIsSignIn((prev) => !prev)}
+              >
+                {isSignIn ? "Cadastre-se" : "Entrar"}
+              </button>
+            </div>
 
             {!!authError && !!authError.showInButton && (
               <InputError>{authError.message}</InputError>

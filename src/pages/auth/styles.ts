@@ -41,11 +41,18 @@ export const ContainerForm = styled.form`
 
   .suggestions {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: ${({ theme }) => theme.colors.neutral["50"]};
     gap: 8px;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
     p {
       font-size: 1.6rem;
